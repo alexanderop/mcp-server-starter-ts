@@ -1,0 +1,41 @@
+# To get started with Dependabot version updates, you'll need to specify which
+# package ecosystems to update and where the package manifests are located.
+# Please see the documentation for all configuration options:
+# https://docs.github.com/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file
+
+version: 2
+updates:
+  # Enable version updates for npm
+  - package-ecosystem: "npm"
+    # Look for `package.json` and `lock` files in the `root` directory
+    directory: "/"
+    # Check the npm registry for updates every day (weekdays)
+    schedule:
+      interval: "daily"
+    # Always increase the version requirement to match the new version
+    versioning-strategy: increase
+    # Limit the number of open pull requests for version updates
+    open-pull-requests-limit: 10
+    # Add reviewers
+    reviewers:
+      - "alexanderopalic"
+    # Add labels to pull requests
+    labels:
+      - "dependencies"
+      - "npm"
+    # Allow only direct updates for production dependencies
+    allow:
+      - dependency-type: "production"
+      - dependency-type: "development"
+    # Group updates for minor and patch releases
+    groups:
+      production-dependencies:
+        dependency-type: "production"
+        update-types:
+          - "minor"
+          - "patch"
+      development-dependencies:
+        dependency-type: "development"
+        update-types:
+          - "minor"
+          - "patch"

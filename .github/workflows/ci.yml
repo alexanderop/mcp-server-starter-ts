@@ -1,0 +1,40 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [ main ]
+  push:
+    branches: [ main ]
+
+jobs:
+  lint-typecheck-build:
+    name: Lint, Type Check & Build
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
+          cache: 'npm'
+          
+      - name: Install dependencies
+        run: npm ci
+        
+      - name: Run ESLint
+        run: npm run lint
+        
+      - name: Run TypeScript type check
+        run: npm run typecheck
+        
+      - name: Build project
+        run: npm run build
+        
+      - name: Check build output
+        run: |
+          echo "Checking if build was successful..."
+          ls -la build/
+          test -f build/index.js
