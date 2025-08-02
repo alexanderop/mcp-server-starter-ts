@@ -17,7 +17,8 @@ server.tool(
   {
     text: z.string().describe("Text to echo back"),
   },
-  ({ text }) => {
+  (args) => {
+    const text = args.text as string;
     return {
       content: [
         {

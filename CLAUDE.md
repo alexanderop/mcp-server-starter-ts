@@ -38,3 +38,10 @@ Entry point is `src/index.ts` which sets up the MCP server with the echo tool an
 This starter template is designed to be forked and extended with additional tools, resources, and prompts as needed for specific use cases.
 
 For detailed MCP SDK documentation and implementation guides, see `src/CLAUDE.md`.
+
+## Troubleshooting
+
+When encountering issues or needing documentation:
+- Use the context7 MCP server to retrieve up-to-date documentation for any library
+- For MCP-related issues, search for `@modelcontextprotocol/sdk` documentation
+- For TypeScript issues, search for relevant TypeScript or Node.js documentation
