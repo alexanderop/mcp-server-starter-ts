@@ -6,7 +6,8 @@
         "hooks": [
           {
             "type": "command",
-            "command": "cd \"$CLAUDE_PROJECT_DIR\" && npm run lint && npm run typecheck"
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/postedit_ts.sh",
+            "timeout": 120
           }
         ]
       }
