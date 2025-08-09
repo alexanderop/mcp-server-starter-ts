@@ -13,6 +13,8 @@ This starter includes:
 - MCP SDK integration  
 - Basic server setup with stdio transport
 - Example `echo` tool implementation
+- Example resources (static and dynamic)
+- Example `generate-readme` prompt
 - ESLint configuration
 - Build scripts
 
@@ -68,6 +70,115 @@ server.tool(
   }
 );
 ```
+
+## Example Resources
+
+### Resources vs Tools
+
+- **Resources**: Provide data/context to the AI without performing actions. Used for retrieving information.
+- **Tools**: Execute actions or operations that may have side effects. Used for performing tasks.
+
+### Static Resource: System Information
+
+A simple resource that provides system information about the server:
+
+```typescript
+server.resource(
+  "system-info",
+  "system://info",
+  {
+    name: "System Information",
+    description: "Get basic system information about the server",
+  },
+  async () => {
+    return {
+      contents: [
+        {
+          uri: "system://info",
+          mimeType: "application/json",
+          text: JSON.stringify({
+            platform: os.platform(),
+            architecture: os.arch(),
+            nodeVersion: process.version,
+            // ... more system info
+          }, null, 2),
+        },
+      ],
+    };
+  }
+);
+```
+
+### Dynamic Resource: Timestamp
+
+A dynamic resource using `ResourceTemplate` that provides timestamps in different formats:
+
+```typescript
+server.registerResource(
+  "timestamp",
+  new ResourceTemplate("timestamp://{format}", {
+    list: async () => [
+      { uri: "timestamp://iso", name: "ISO 8601 format" },
+      { uri: "timestamp://unix", name: "Unix timestamp" },
+      { uri: "timestamp://readable", name: "Human-readable format" },
+    ],
+  }),
+  {
+    name: "Timestamp",
+    description: "Get current timestamp in various formats",
+  },
+  async (uri, { format }) => {
+    // Format-specific timestamp generation
+    // Returns timestamp in requested format
+  }
+);
+```
+
+Access examples:
+- `system://info` - Get system information
+- `timestamp://iso` - Get current time in ISO 8601 format
+- `timestamp://unix` - Get Unix timestamp
+- `timestamp://readable` - Get human-readable timestamp
+
+## Example Prompt
+
+### Prompts vs Tools vs Resources
+
+- **Prompts**: Reusable templates for LLM interactions (user-invoked)
+- **Tools**: Execute actions or operations that may have side effects
+- **Resources**: Provide data/context to the AI without performing actions
+
+### Generate README Prompt
+
+A prompt template for generating project documentation:
+
+```typescript
+server.prompt(
+  "generate-readme",
+  "Generate a README file for a project",
+  {
+    projectName: z.string().describe("Name of the project"),
+    description: z.string().describe("Brief description of what the project does"),
+  },
+  ({ projectName, description }) => ({
+    messages: [
+      {
+        role: "user",
+        content: {
+          type: "text",
+          text: `Generate a professional README.md file for a project called "${projectName}". 
+          
+Project description: ${description}
+
+Please include sections for: installation, usage, features, contributing, and license.`,
+        },
+      },
+    ],
+  })
+);
+```
+
+This prompt helps users quickly generate standardized documentation for their projects.
 
 ## Extending the Server
 

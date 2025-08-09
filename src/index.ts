@@ -1,34 +1,31 @@
 #!/usr/bin/env node
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
-import { z } from "zod";
+
+import { registerGenerateReadmePrompt } from "./prompts/generate-readme.js";
+import { registerSystemInfoResource } from "./resources/system-info.js";
+import { registerTimestampResource } from "./resources/timestamp.js";
+import { registerEchoTool } from "./tools/echo.js";
 
 const server = new McpServer({
   name: "mcp-server-starter",
   version: "1.0.0",
   capabilities: {
     tools: {},
+    resources: {},
+    prompts: {},
   },
 });
 
-server.tool(
-  "echo",
-  "Echo back the provided text",
-  {
-    text: z.string().min(1, "Text cannot be empty").describe("Text to echo back"),
-  },
-  (args) => {
-    const text = args.text as string;
-    return {
-      content: [
-        {
-          type: "text",
-          text: text,
-        },
-      ],
-    };
-  }
-);
+// Register tools
+registerEchoTool(server);
+
+// Register resources
+registerSystemInfoResource(server);
+registerTimestampResource(server);
+
+// Register prompts
+registerGenerateReadmePrompt(server);
 
 async function main(): Promise<void> {
   const transport = new StdioServerTransport();
