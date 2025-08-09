@@ -185,6 +185,61 @@ export function assertToolResponse(
 }
 
 /**
+ * Assertion helper for resource content
+ */
+export function assertResourceContent(
+  resource: { contents?: Array<{ uri?: string; mimeType?: string; text?: string }> },
+  expected: {
+    uri: string;
+    mimeType: string;
+    contentValidator?: (text: string) => void;
+  }
+): void {
+  assert(resource.contents !== undefined, "Resource should have contents");
+  assert(resource.contents.length > 0, "Resource should have at least one content item");
+  
+  const content = resource.contents[0];
+  assert(content !== undefined, "First content item should exist");
+  assert.strictEqual(content.uri, expected.uri, "URI should match");
+  assert.strictEqual(content.mimeType, expected.mimeType, "MIME type should match");
+  assert(content.text !== undefined, "Content should have text");
+  
+  if (expected.contentValidator !== undefined) {
+    expected.contentValidator(content.text);
+  }
+}
+
+/**
+ * Assertion helper for JSON resources
+ */
+export function assertJSONResource<T = unknown>(
+  resource: { contents?: Array<{ uri?: string; mimeType?: string; text?: string }> },
+  expectedUri: string,
+  validator?: (data: T) => void
+): T {
+  assertResourceContent(resource, {
+    uri: expectedUri,
+    mimeType: "application/json"
+  });
+  
+  const content = resource.contents?.[0];
+  assert(content?.text !== undefined, "Content should have text");
+  
+  let parsed: T;
+  try {
+    parsed = JSON.parse(content.text) as T;
+  } catch (error) {
+    assert.fail(`Failed to parse JSON: ${String(error)}`);
+  }
+  
+  if (validator !== undefined) {
+    validator(parsed);
+  }
+  
+  return parsed;
+}
+
+/**
  * Assertion helper for error responses
  */
 export async function assertToolError(
