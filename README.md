@@ -208,38 +208,42 @@ To use this server with an MCP client:
 
 ### Writing Tests
 
-This project uses Jest for testing. Tests are located in the `__tests__` directory and follow the naming convention `*.test.ts`.
+This project uses Node.js's built-in test runner with the `node:test` and `node:assert` modules. Tests are located in the `tests/` directory and follow the naming convention `*.test.ts`.
 
 ### Test Structure
 
-Here's an example of how to write tests for MCP tools, resources, and prompts:
+Here's how to write tests for MCP tools, resources, and prompts using the actual test helpers:
 
 #### Testing Tools
 
 ```typescript
-// __tests__/tools/echo.test.ts
-import { describe, it, expect } from '@jest/globals';
-import { createTestClient } from '../helpers/test-client';
+// tests/echo.test.ts
+import assert from "node:assert";
+import { describe, it } from "node:test";
+import { 
+  withTestClient, 
+  assertToolResponse,
+  assertToolError 
+} from "./helpers/test-client.js";
 
-describe('Echo Tool', () => {
-  it('should echo back the provided text', async () => {
-    const client = createTestClient();
-    
-    const result = await client.callTool('echo', {
-      text: 'Hello, MCP!'
-    });
-    
-    expect(result.content[0]).toEqual({
-      type: 'text',
-      text: 'Hello, MCP!'
+describe("Echo Tool", () => {
+  it("should echo back the provided text", async () => {
+    await withTestClient(async (client) => {
+      const testText = "Hello, MCP!";
+      const response = await client.callTool("echo", { text: testText });
+      
+      assertToolResponse(response, testText);
     });
   });
 
-  it('should validate input parameters', async () => {
-    const client = createTestClient();
-    
-    await expect(client.callTool('echo', {}))
-      .rejects.toThrow('Required parameter');
+  it("should reject empty string", async () => {
+    await withTestClient(async (client) => {
+      await assertToolError(
+        client.callTool("echo", { text: "" }),
+        "Text cannot be empty",
+        "Should reject empty text with validation error"
+      );
+    });
   });
 });
 ```
@@ -247,20 +251,29 @@ describe('Echo Tool', () => {
 #### Testing Resources
 
 ```typescript
-// __tests__/resources/system-info.test.ts
-import { describe, it, expect } from '@jest/globals';
-import { createTestClient } from '../helpers/test-client';
+// tests/system-info.test.ts
+import assert from "node:assert";
+import { describe, it } from "node:test";
+import { 
+  withTestClient, 
+  assertJSONResource
+} from "./helpers/test-client.js";
 
-describe('System Info Resource', () => {
-  it('should return system information', async () => {
-    const client = createTestClient();
-    
-    const result = await client.readResource('system://info');
-    const data = JSON.parse(result.contents[0].text);
-    
-    expect(data).toHaveProperty('platform');
-    expect(data).toHaveProperty('nodeVersion');
-    expect(data.nodeVersion).toMatch(/^v\d+\.\d+\.\d+/);
+describe("System Info Resource", () => {
+  it("should return system information", async () => {
+    await withTestClient(async (client) => {
+      const response = await client.readResource("system://info");
+      
+      const systemInfo = assertJSONResource(
+        response,
+        "system://info",
+        (data) => {
+          assert(data.platform.length > 0, "Should have platform");
+          assert(data.nodeVersion.length > 0, "Should have nodeVersion");
+          assert(typeof data.uptime === "number", "Uptime should be a number");
+        }
+      );
+    });
   });
 });
 ```
@@ -268,26 +281,31 @@ describe('System Info Resource', () => {
 #### Testing Dynamic Resources
 
 ```typescript
-// __tests__/resources/timestamp.test.ts
-describe('Timestamp Resource', () => {
-  it('should return ISO format timestamp', async () => {
-    const client = createTestClient();
-    
-    const result = await client.readResource('timestamp://iso');
-    const timestamp = result.contents[0].text;
-    
-    // Verify ISO 8601 format
-    expect(timestamp).toMatch(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/);
+// tests/timestamp.test.ts
+describe("Timestamp Resource", () => {
+  it("should return ISO format timestamp", async () => {
+    await withTestClient(async (client) => {
+      const response = await client.readResource("timestamp://iso");
+      
+      assertResourceContent(response, {
+        uri: "timestamp://iso",
+        mimeType: "text/plain",
+        contentValidator: (text) => {
+          // Verify ISO 8601 format
+          assert(text.match(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/));
+        }
+      });
+    });
   });
 
-  it('should return Unix timestamp', async () => {
-    const client = createTestClient();
-    
-    const result = await client.readResource('timestamp://unix');
-    const timestamp = parseInt(result.contents[0].text);
-    
-    expect(timestamp).toBeGreaterThan(0);
-    expect(timestamp).toBeLessThanOrEqual(Date.now());
+  it("should return Unix timestamp", async () => {
+    await withTestClient(async (client) => {
+      const response = await client.readResource("timestamp://unix");
+      const timestamp = parseInt(response.contents[0].text);
+      
+      assert(timestamp > 0, "Timestamp should be positive");
+      assert(timestamp <= Date.now(), "Timestamp should not be in the future");
+    });
   });
 });
 ```
@@ -295,63 +313,67 @@ describe('Timestamp Resource', () => {
 #### Testing Prompts
 
 ```typescript
-// __tests__/prompts/generate-readme.test.ts
-describe('Generate README Prompt', () => {
-  it('should generate prompt with correct parameters', async () => {
-    const client = createTestClient();
-    
-    const result = await client.getPrompt('generate-readme', {
-      projectName: 'TestProject',
-      description: 'A test project'
+// tests/generate-readme.test.ts
+describe("Generate README Prompt", () => {
+  it("should generate prompt with correct parameters", async () => {
+    await withTestClient(async (client) => {
+      const result = await client.getPrompt("generate-readme", {
+        projectName: "TestProject",
+        description: "A test project"
+      });
+      
+      assert.strictEqual(result.messages[0].role, "user");
+      assert(result.messages[0].content.text.includes("TestProject"));
+      assert(result.messages[0].content.text.includes("A test project"));
     });
-    
-    expect(result.messages[0].role).toBe('user');
-    expect(result.messages[0].content.text).toContain('TestProject');
-    expect(result.messages[0].content.text).toContain('A test project');
   });
 });
 ```
 
 ### Test Helpers
 
-Create reusable test utilities in `__tests__/helpers/`:
+The project includes comprehensive test utilities in `tests/helpers/`:
 
 ```typescript
-// __tests__/helpers/test-client.ts
-import { Client } from '@modelcontextprotocol/sdk/client';
-import { StdioClientTransport } from '@modelcontextprotocol/sdk/client/stdio';
-import { spawn } from 'child_process';
+// tests/helpers/test-client.ts
+import { Client } from "@modelcontextprotocol/sdk/client/index.js";
+import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
 
-export function createTestClient() {
-  const serverProcess = spawn('node', ['build/index.js']);
-  const transport = new StdioClientTransport({
-    command: 'node',
-    args: ['build/index.js']
-  });
-  
-  return new Client({
-    name: 'test-client',
-    version: '1.0.0'
-  }, {
-    transport
-  });
+// TestClient class for managing test connections
+export class TestClient {
+  async setup(): Promise<void>
+  async teardown(): Promise<void>
+  async callTool(name: string, args: Record<string, unknown>): Promise<CallToolResult>
+  async readResource(uri: string): Promise<ReadResourceResult>
+  // ... more methods
 }
+
+// Higher-order function for automatic setup/teardown
+export async function withTestClient<T>(
+  testFn: (client: TestClient) => Promise<T>
+): Promise<T>
+
+// Assertion helpers
+export function assertToolResponse(response, expectedContent, message?)
+export function assertJSONResource(resource, expectedUri, validator?)
+export function assertToolError(toolCall, errorMatcher?, message?)
 ```
 
 ### Running Tests
 
 ```bash
-# Run all tests
+# Run all tests (builds first, then runs tests)
 npm test
 
-# Run tests in watch mode
-npm run test:watch
-
-# Run tests with coverage
-npm run test:coverage
+# Run tests directly (for Node.js 23+)
+npm run test:run
 
 # Run specific test file
-npm test -- echo.test.ts
+node --test tests/echo.test.ts
+
+# Run tests with specific Node version
+# For Node.js 23+: runs TypeScript tests directly
+# For older versions: compiles to JS first then runs
 ```
 
 ### Test Best Practices
@@ -373,9 +395,9 @@ Tests are automatically run in CI/CD pipelines. Ensure all tests pass before mer
 - `npm run build` - Compile TypeScript to JavaScript
 - `npm run lint` - Run ESLint
 - `npm run lint:fix` - Auto-fix linting issues
-- `npm test` - Run all tests
-- `npm run test:watch` - Run tests in watch mode
-- `npm run test:coverage` - Run tests with coverage report
+- `npm test` - Build and run all tests
+- `npm run test:run` - Run tests directly (Node.js version dependent)
+- `npm run typecheck` - Type check without emitting files
 
 ## License
 
