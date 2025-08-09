@@ -1,25 +1,25 @@
+import { z } from "zod";
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 
-export type ModuleType = "tool" | "resource" | "prompt";
+// Define Zod enum for ModuleType
+export const moduleTypeSchema = z.enum(["tool", "resource", "prompt"]);
+export type ModuleType = z.infer<typeof moduleTypeSchema>;
 
-export type RegisterableModule = {
-  type: ModuleType;
-  name: string;
-  description?: string;
-  register: (server: McpServer) => void;
-}
+// Define Zod schema for RegisterableModule
+export const registerableModuleSchema = z.object({
+  type: moduleTypeSchema,
+  name: z.string(),
+  description: z.string().optional(),
+  register: z.function()
+    .args(z.any()) // McpServer type is complex, using any for the argument
+    .returns(z.union([z.void(), z.promise(z.void())])) // Support both sync and async
+});
+
+export type RegisterableModule = z.infer<typeof registerableModuleSchema> & {
+  register: (server: McpServer) => void | Promise<void>;
+};
 
 export function isRegisterableModule(module: unknown): module is RegisterableModule {
-  if (module === null || module === undefined || typeof module !== "object") {
-    return false;
-  }
-  
-  const mod = module as Record<string, unknown>;
-  
-  return (
-    typeof mod.type === "string" &&
-    ["tool", "resource", "prompt"].includes(mod.type) &&
-    typeof mod.name === "string" &&
-    typeof mod.register === "function"
-  );
+  const result = registerableModuleSchema.safeParse(module);
+  return result.success;
 }

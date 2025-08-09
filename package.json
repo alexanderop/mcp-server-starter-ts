@@ -21,6 +21,9 @@
   ],
   "author": "",
   "license": "MIT",
+  "engines": {
+    "node": ">=20.11.0"
+  },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.17.2",
     "fast-glob": "^3.3.3",

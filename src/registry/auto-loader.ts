@@ -35,12 +35,12 @@ export async function autoRegisterModules(server: McpServer): Promise<void> {
         
         if (module.default !== undefined && isRegisterableModule(module.default)) {
           const registerable = module.default;
-          registerable.register(server);
+          await registerable.register(server);
           console.error(`✓ Registered ${registerable.type}: ${registerable.name}`);
           return { success: true, name: registerable.name, type: registerable.type };
         } else if (typeof module.default === "function") {
-          const legacyRegister = module.default as (server: McpServer) => void;
-          legacyRegister(server);
+          const legacyRegister = module.default as (server: McpServer) => void | Promise<void>;
+          await legacyRegister(server);
           console.error(`✓ Registered legacy module: ${moduleName}`);
           return { success: true, name: moduleName, type: moduleType, legacy: true };
         } else {
