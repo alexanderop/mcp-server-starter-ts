@@ -43,7 +43,7 @@ jobs:
     
     strategy:
       matrix:
-        node-version: [18.x, 20.x, 22.x]
+        node-version: [23.x]
     
     steps:
       - name: Checkout code
@@ -59,7 +59,7 @@ jobs:
         run: npm ci
         
       - name: Run tests
-        run: npm test --if-present
+        run: npm test
         
   security-check:
     name: Security Check

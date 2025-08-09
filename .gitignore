@@ -4,6 +4,8 @@ node_modules/
 # Build output
 dist/
 build/
+# Exclude test output specifically
+build/tests/
 
 # Environment variables
 .env

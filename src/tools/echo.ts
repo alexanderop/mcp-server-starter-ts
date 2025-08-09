@@ -10,7 +10,7 @@ export function registerEchoTool(server: McpServer): void {
       text: z.string().min(1, "Text cannot be empty").describe("Text to echo back"),
     },
     (args) => {
-      const text = args.text as string;
+      const text = args.text;
       return {
         content: [
           {

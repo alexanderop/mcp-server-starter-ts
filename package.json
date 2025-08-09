@@ -5,8 +5,10 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "npm run build && npm run test:run",
+    "test:run": "node --version | grep -q 'v2[3-9]\\|v[3-9][0-9]' && node --test tests/**/*.test.ts || (npm run build:tests && node --test build/tests/**/*.test.js)",
     "build": "tsc && chmod 755 build/index.js",
+    "build:tests": "tsc -p tsconfig.test.json",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "typecheck": "tsc --noEmit"
@@ -21,7 +23,7 @@
   "license": "MIT",
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.17.1",
-    "zod": "^4.0.14"
+    "zod": "^3.25.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.32.0",
