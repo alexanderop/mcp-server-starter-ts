@@ -204,11 +204,178 @@ To use this server with an MCP client:
 }
 ```
 
+## Testing
+
+### Writing Tests
+
+This project uses Jest for testing. Tests are located in the `__tests__` directory and follow the naming convention `*.test.ts`.
+
+### Test Structure
+
+Here's an example of how to write tests for MCP tools, resources, and prompts:
+
+#### Testing Tools
+
+```typescript
+// __tests__/tools/echo.test.ts
+import { describe, it, expect } from '@jest/globals';
+import { createTestClient } from '../helpers/test-client';
+
+describe('Echo Tool', () => {
+  it('should echo back the provided text', async () => {
+    const client = createTestClient();
+    
+    const result = await client.callTool('echo', {
+      text: 'Hello, MCP!'
+    });
+    
+    expect(result.content[0]).toEqual({
+      type: 'text',
+      text: 'Hello, MCP!'
+    });
+  });
+
+  it('should validate input parameters', async () => {
+    const client = createTestClient();
+    
+    await expect(client.callTool('echo', {}))
+      .rejects.toThrow('Required parameter');
+  });
+});
+```
+
+#### Testing Resources
+
+```typescript
+// __tests__/resources/system-info.test.ts
+import { describe, it, expect } from '@jest/globals';
+import { createTestClient } from '../helpers/test-client';
+
+describe('System Info Resource', () => {
+  it('should return system information', async () => {
+    const client = createTestClient();
+    
+    const result = await client.readResource('system://info');
+    const data = JSON.parse(result.contents[0].text);
+    
+    expect(data).toHaveProperty('platform');
+    expect(data).toHaveProperty('nodeVersion');
+    expect(data.nodeVersion).toMatch(/^v\d+\.\d+\.\d+/);
+  });
+});
+```
+
+#### Testing Dynamic Resources
+
+```typescript
+// __tests__/resources/timestamp.test.ts
+describe('Timestamp Resource', () => {
+  it('should return ISO format timestamp', async () => {
+    const client = createTestClient();
+    
+    const result = await client.readResource('timestamp://iso');
+    const timestamp = result.contents[0].text;
+    
+    // Verify ISO 8601 format
+    expect(timestamp).toMatch(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/);
+  });
+
+  it('should return Unix timestamp', async () => {
+    const client = createTestClient();
+    
+    const result = await client.readResource('timestamp://unix');
+    const timestamp = parseInt(result.contents[0].text);
+    
+    expect(timestamp).toBeGreaterThan(0);
+    expect(timestamp).toBeLessThanOrEqual(Date.now());
+  });
+});
+```
+
+#### Testing Prompts
+
+```typescript
+// __tests__/prompts/generate-readme.test.ts
+describe('Generate README Prompt', () => {
+  it('should generate prompt with correct parameters', async () => {
+    const client = createTestClient();
+    
+    const result = await client.getPrompt('generate-readme', {
+      projectName: 'TestProject',
+      description: 'A test project'
+    });
+    
+    expect(result.messages[0].role).toBe('user');
+    expect(result.messages[0].content.text).toContain('TestProject');
+    expect(result.messages[0].content.text).toContain('A test project');
+  });
+});
+```
+
+### Test Helpers
+
+Create reusable test utilities in `__tests__/helpers/`:
+
+```typescript
+// __tests__/helpers/test-client.ts
+import { Client } from '@modelcontextprotocol/sdk/client';
+import { StdioClientTransport } from '@modelcontextprotocol/sdk/client/stdio';
+import { spawn } from 'child_process';
+
+export function createTestClient() {
+  const serverProcess = spawn('node', ['build/index.js']);
+  const transport = new StdioClientTransport({
+    command: 'node',
+    args: ['build/index.js']
+  });
+  
+  return new Client({
+    name: 'test-client',
+    version: '1.0.0'
+  }, {
+    transport
+  });
+}
+```
+
+### Running Tests
+
+```bash
+# Run all tests
+npm test
+
+# Run tests in watch mode
+npm run test:watch
+
+# Run tests with coverage
+npm run test:coverage
+
+# Run specific test file
+npm test -- echo.test.ts
+```
+
+### Test Best Practices
+
+1. **Isolation**: Each test should be independent and not rely on other tests
+2. **Mocking**: Mock external dependencies and system calls
+3. **Coverage**: Aim for at least 80% code coverage
+4. **Descriptive Names**: Use clear, descriptive test names that explain what is being tested
+5. **Arrange-Act-Assert**: Structure tests with clear setup, execution, and verification phases
+6. **Edge Cases**: Test boundary conditions, error cases, and invalid inputs
+7. **Performance**: Include tests for performance-critical operations
+
+### Continuous Integration
+
+Tests are automatically run in CI/CD pipelines. Ensure all tests pass before merging pull requests.
+
 ## Development Scripts
 
 - `npm run build` - Compile TypeScript to JavaScript
 - `npm run lint` - Run ESLint
 - `npm run lint:fix` - Auto-fix linting issues
+- `npm test` - Run all tests
+- `npm run test:watch` - Run tests in watch mode
+- `npm run test:coverage` - Run tests with coverage report
 
 ## License
 
