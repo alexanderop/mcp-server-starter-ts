@@ -12,7 +12,7 @@ export default tseslint.config(
     languageOptions: {
       parserOptions: {
         projectService: {
-          allowDefaultProject: ['tests/*.ts', 'tests/*/*.ts'],
+          allowDefaultProject: ['tests/*.ts', 'tests/*.test.ts', 'tests/helpers/*.ts'],
         },
         tsconfigRootDir: import.meta.dirname,
       },
@@ -132,7 +132,7 @@ export default tseslint.config(
             'object',
             'type'
           ],
-          'newlines-between': 'always',
+          'newlines-between': 'never',
           alphabetize: {
             order: 'asc',
             caseInsensitive: true
@@ -140,6 +140,7 @@ export default tseslint.config(
         }
       ],
       'import/no-duplicates': 'error',
+      'no-multiple-empty-lines': ['error', { max: 1, maxEOF: 0, maxBOF: 0 }],
       
       // Error suppression - ban @ts-ignore, allow @ts-expect-error with description
       '@typescript-eslint/ban-ts-comment': [
@@ -203,6 +204,13 @@ export default tseslint.config(
       '@typescript-eslint/no-explicit-any': 'warn',
       '@typescript-eslint/no-floating-promises': 'off',
       'max-params': 'off',
+    }
+  },
+  {
+    // Allow default exports for registerable modules
+    files: ['src/tools/*.ts', 'src/resources/*.ts', 'src/prompts/*.ts'],
+    rules: {
+      'import/no-default-export': 'off',
     }
   },
   {
