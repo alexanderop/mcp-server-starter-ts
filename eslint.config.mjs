@@ -11,7 +11,9 @@ export default tseslint.config(
   {
     languageOptions: {
       parserOptions: {
-        projectService: true,
+        projectService: {
+          allowDefaultProject: ['tests/*.ts', 'tests/*/*.ts'],
+        },
         tsconfigRootDir: import.meta.dirname,
       },
     },
@@ -199,6 +201,7 @@ export default tseslint.config(
     rules: {
       // Relax some rules for tests
       '@typescript-eslint/no-explicit-any': 'warn',
+      '@typescript-eslint/no-floating-promises': 'off',
       'max-params': 'off',
     }
   },
