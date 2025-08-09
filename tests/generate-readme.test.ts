@@ -1,6 +1,6 @@
 import assert from "node:assert";
 import { describe, it } from "node:test";
-import { withTestClient } from "./helpers/test-client.js";
+import { withTestClient } from "./helpers/test-client.ts";
 
 describe("Generate README Prompt Tests", () => {
   it("should list generate-readme prompt", async () => {
