@@ -23,6 +23,7 @@
   "license": "MIT",
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.17.2",
+    "fast-glob": "^3.3.3",
     "zod": "^3.25.0"
   },
   "devDependencies": {
