@@ -1,0 +1,24 @@
+{
+  "entryPointStrategy": "expand",
+  "entryPoints": ["src"],
+  "tsconfig": "tsconfig.json",
+  "out": "docs",
+  "exclude": ["**/*.test.ts", "tests/**/*", "build/**/*", "dev.js"],
+  "excludeExternals": true,
+  "excludePrivate": true,
+  "excludeInternal": true,
+  "readme": "README.md",
+  "navigationLinks": {
+    "GitHub": "https://github.com/alexanderop/mcp-server-starter-ts",
+    "MCP Protocol": "https://modelcontextprotocol.io"
+  },
+  "categorizeByGroup": true,
+  "categoryOrder": ["Core", "Tools", "Resources", "Prompts", "Registry", "*"],
+  "groupOrder": ["Variables", "Functions", "Classes", "Interfaces", "Type Aliases", "*"],
+  "plugin": ["typedoc-plugin-markdown"],
+  "outputFileStrategy": "modules",
+  "hidePageHeader": false,
+  "hideBreadcrumbs": false,
+  "hidePageTitle": false,
+  "indexFormat": "table"
+}
