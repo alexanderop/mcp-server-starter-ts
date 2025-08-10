@@ -238,6 +238,6 @@ export default tseslint.config(
   },
   {
     // Ignore build output and common directories
-    ignores: ['build/**', 'dist/**', 'node_modules/**', 'coverage/**', 'eslint.config.mjs'],
+    ignores: ['build/**', 'dist/**', 'node_modules/**', 'coverage/**', 'eslint.config.mjs', 'dev.js'],
   }
 );
