@@ -15,12 +15,7 @@
     "dev": "npm run build && node dev",
     "gen:tool": "hygen tool new",
     "gen:prompt": "hygen prompt new",
-    "gen:resource": "hygen resource new",
-    "docs": "typedoc",
-    "docs:clean": "rm -rf docs",
-    "docs:watch": "typedoc --watch",
-    "docs:serve": "npx http-server docs -p 8080 -o",
-    "docs:coverage": "typedoc --plugin typedoc-plugin-coverage --out docs"
+    "gen:resource": "hygen resource new"
   },
   "keywords": [
     "mcp",
@@ -46,10 +41,6 @@
     "eslint-plugin-import": "^2.32.0",
     "eslint-plugin-sonarjs": "^3.0.4",
     "hygen": "^6.2.11",
-    "typedoc": "^0.28.10",
-    "typedoc-plugin-coverage": "^4.0.1",
-    "typedoc-plugin-markdown": "^4.8.0",
-    "typedoc-plugin-mermaid": "^1.12.0",
     "typescript": "^5.9.2",
     "typescript-eslint": "^8.39.0"
   },

@@ -17,11 +17,9 @@ The Model Context Protocol (MCP) is an open protocol that standardizes how AI ap
 
 ```mermaid
 graph LR
-    A[AI Assistant<br/>Claude, GPT, etc.] <-->|MCP Protocol| B[MCP Server]
-    B <--> C[Your Tools<br/>& Resources]
-    B <--> D[Databases]
-    B <--> E[APIs]
-    B <--> F[File Systems]
+    A[AI] <-->|MCP| B[Server]
+    B <--> C[Tools]
+    B <--> D[Resources]
 ```
 
 This starter template provides:
@@ -148,20 +146,9 @@ mcp-server-starter-ts/
 
 ```mermaid
 flowchart TB
-    Start([Server Starts]) --> Load[Auto-Loader Scans Directories]
-    Load --> Tools[/src/tools/*.js/]
-    Load --> Resources[/src/resources/*.js/]
-    Load --> Prompts[/src/prompts/*.js/]
-    
-    Tools --> Register1[Register Tool Modules]
-    Resources --> Register2[Register Resource Modules]
-    Prompts --> Register3[Register Prompt Modules]
-    
-    Register1 --> Server[MCP Server Ready]
-    Register2 --> Server
-    Register3 --> Server
-    
-    Server --> Client([Client Connects])
+    A[Start] --> B[Scan]
+    B --> C[Register]
+    C --> D[Ready]
 ```
 
 > [!TIP]
@@ -218,15 +205,9 @@ The auto-loader automatically discovers and registers all generated modules - no
 
 ```mermaid
 graph TD
-    subgraph "MCP Server Capabilities"
-        Tools["🔧 Tools<br/>Execute actions & computations"]
-        Resources["📦 Resources<br/>Provide data & content"]
-        Prompts["💬 Prompts<br/>Reusable prompt templates"]
-    end
-    
-    Tools --> Example1["Examples:<br/>• Database queries<br/>• API calls<br/>• File operations"]
-    Resources --> Example2["Examples:<br/>• Configuration files<br/>• Documentation<br/>• Static data"]
-    Prompts --> Example3["Examples:<br/>• Code review templates<br/>• Analysis prompts<br/>• Task templates"]
+    A[MCP] --> B[Tools]
+    A --> C[Resources]
+    A --> D[Prompts]
 ```
 
 ### Adding a New Tool
@@ -521,24 +502,10 @@ The project uses strict TypeScript settings for maximum type safety. Key configu
 
 ```mermaid
 sequenceDiagram
-    participant IDE as VS Code / IDE<br/>(with MCP support)
-    participant MCP as Your MCP Server
-    participant Resources as Your Resources<br/>(DB, APIs, Files)
-    
-    IDE->>MCP: Connect via stdio
-    MCP-->>IDE: Capabilities (tools, resources, prompts)
-    
-    IDE->>MCP: Call tool "calculate"
-    MCP->>Resources: Perform calculation
-    Resources-->>MCP: Return result
-    MCP-->>IDE: Tool response
-    
-    IDE->>MCP: Read resource "config"
-    MCP->>Resources: Fetch configuration
-    Resources-->>MCP: Config data
-    MCP-->>IDE: Resource content
-    
-    Note over IDE,Resources: Bidirectional communication enables<br/>rich interactions between AI and your systems
+    IDE->>MCP: Connect
+    MCP-->>IDE: Ready
+    IDE->>MCP: Call
+    MCP-->>IDE: Response
 ```
 
 ### With VS Code (Recommended)
