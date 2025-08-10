@@ -15,10 +15,8 @@
   "categorizeByGroup": true,
   "categoryOrder": ["Core", "Tools", "Resources", "Prompts", "Registry", "*"],
   "groupOrder": ["Variables", "Functions", "Classes", "Interfaces", "Type Aliases", "*"],
-  "plugin": ["typedoc-plugin-markdown"],
-  "outputFileStrategy": "modules",
-  "hidePageHeader": false,
-  "hideBreadcrumbs": false,
-  "hidePageTitle": false,
-  "indexFormat": "table"
+  "theme": "default",
+  "githubPages": true,
+  "hideGenerator": false,
+  "searchInComments": true
 }
