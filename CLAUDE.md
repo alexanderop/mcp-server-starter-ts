@@ -24,6 +24,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - `npm run gen:prompt` - Generate new prompt with test
 - `npm run gen:resource` - Generate new resource with test
 
+### Documentation
+- `npm run docs` - Generate API documentation with TypeDoc
+- `npm run docs:watch` - Generate docs in watch mode
+- `npm run docs:clean` - Remove generated documentation
+
 ## Architecture Overview
 
 This is a Model Context Protocol (MCP) server built with TypeScript that provides tools, resources, and prompts to AI assistants.

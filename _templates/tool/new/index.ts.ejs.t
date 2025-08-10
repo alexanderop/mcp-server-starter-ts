@@ -1,10 +1,26 @@
 ---
 to: src/tools/<%= name %>.ts
 ---
+/**
+ * @module Tools/<%= h.changeCase.pascalCase(name) %>
+ * @category Tools
+ */
+
 import { z } from "zod";
 import type { RegisterableModule } from "../registry/types.js";
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 
+/**
+ * <%= description %>
+ * 
+ * @example
+ * ```typescript
+ * // Usage in MCP client
+ * const result = await client.callTool("<%= name %>", { 
+ *   input: "example input" 
+ * });
+ * ```
+ */
 const <%= h.changeCase.camelCase(name) %>Module: RegisterableModule = {
   type: "tool",
   name: "<%= name %>",

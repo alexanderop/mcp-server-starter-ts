@@ -17,3 +17,6 @@ build/tests/
 .DS_Store
 
 # IDE
+
+# Documentation
+docs/

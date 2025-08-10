@@ -1,9 +1,24 @@
 ---
 to: src/resources/<%= name %>.ts
 ---
+/**
+ * @module Resources/<%= h.changeCase.pascalCase(name) %>
+ * @category Resources
+ */
+
 import type { RegisterableModule } from "../registry/types.js";
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 
+/**
+ * <%= description %>
+ * 
+ * @example
+ * ```typescript
+ * // Usage in MCP client
+ * const resource = await client.getResource("<%= name %>://info");
+ * const data = JSON.parse(resource.contents[0].text);
+ * ```
+ */
 const <%= h.changeCase.camelCase(name) %>Module: RegisterableModule = {
   type: "resource",
   name: "<%= name %>",

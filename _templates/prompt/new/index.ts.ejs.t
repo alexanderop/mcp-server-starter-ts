@@ -1,14 +1,34 @@
 ---
 to: src/prompts/<%= name %>.ts
 ---
+/**
+ * @module Prompts/<%= h.changeCase.pascalCase(name) %>
+ * @category Prompts
+ */
+
 import { z } from "zod";
 import type { RegisterableModule } from "../registry/types.js";
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 
+/**
+ * Schema for <%= name %> prompt arguments
+ * @internal
+ */
 const <%= h.changeCase.camelCase(name) %>Schema = {
   topic: z.string().min(1).describe("Topic to generate content about"),
 } as const;
 
+/**
+ * <%= description %>
+ * 
+ * @example
+ * ```typescript
+ * // Usage in MCP client
+ * const prompt = await client.getPrompt("<%= name %>", { 
+ *   topic: "example topic" 
+ * });
+ * ```
+ */
 const <%= h.changeCase.camelCase(name) %>Module: RegisterableModule = {
   type: "prompt",
   name: "<%= name %>",
