@@ -3,6 +3,7 @@
 import eslint from '@eslint/js';
 import tseslint from 'typescript-eslint';
 import importPlugin from 'eslint-plugin-import';
+import sonarjs from 'eslint-plugin-sonarjs';
 
 export default tseslint.config(
   eslint.configs.recommended,
@@ -21,6 +22,7 @@ export default tseslint.config(
   {
     plugins: {
       import: importPlugin,
+      sonarjs: sonarjs,
     },
     rules: {
       // Type Safety Rules
@@ -153,8 +155,28 @@ export default tseslint.config(
       'spaced-comment': 'error',
       
       // Additional type safety rules
+      '@typescript-eslint/no-floating-promises': 'error',
       '@typescript-eslint/prefer-nullish-coalescing': 'error',
       '@typescript-eslint/prefer-optional-chain': 'error',
+      
+      // Exhaustiveness and correctness
+      '@typescript-eslint/switch-exhaustiveness-check': 'error',
+      '@typescript-eslint/no-confusing-void-expression': 'error',
+      '@typescript-eslint/only-throw-error': 'error',
+      'no-throw-literal': 'error',
+      'prefer-promise-reject-errors': 'error',
+      'consistent-return': 'error',
+      
+      // Immutability
+      'no-param-reassign': ['error', { props: true }],
+      
+      // Type style preferences
+      '@typescript-eslint/consistent-indexed-object-style': ['error', 'record'],
+      
+      // Code quality and complexity
+      'sonarjs/no-duplicate-string': 'error',
+      'sonarjs/no-identical-functions': 'error',
+      'sonarjs/cognitive-complexity': ['error', 15],
       '@typescript-eslint/strict-boolean-expressions': ['error', {
         allowString: false,
         allowNumber: false,
@@ -196,12 +218,15 @@ export default tseslint.config(
   },
   {
     // Apply different rules for test files
-    files: ['**/*.test.ts', '**/*.spec.ts'],
+    files: ['**/*.test.ts', '**/*.spec.ts', 'tests/**/*.ts'],
     rules: {
       // Relax some rules for tests
       '@typescript-eslint/no-explicit-any': 'warn',
       '@typescript-eslint/no-floating-promises': 'off',
       'max-params': 'off',
+      // Duplicate strings are common in tests
+      'sonarjs/no-duplicate-string': 'off',
+      'sonarjs/no-identical-functions': 'off',
     }
   },
   {

@@ -2,6 +2,10 @@ import { ResourceTemplate } from "@modelcontextprotocol/sdk/server/mcp.js";
 import type { RegisterableModule } from "../registry/types.js";
 import type { McpServer} from "@modelcontextprotocol/sdk/server/mcp.js";
 
+type TimestampFormat = "iso" | "unix" | "readable";
+
+const MIME_TYPE_PLAIN = "text/plain";
+
 const timestampModule: RegisterableModule = {
   type: "resource",
   name: "timestamp",
@@ -33,7 +37,35 @@ const timestampModule: RegisterableModule = {
         const now = new Date();
         let timestamp: string;
 
-        switch (format) {
+        if (format === undefined) {
+          return {
+            contents: [
+              {
+                uri: uri.href,
+                mimeType: MIME_TYPE_PLAIN,
+                text: "Format not specified. Use 'iso', 'unix', or 'readable'",
+              },
+            ],
+          };
+        }
+
+        const validFormats: Array<TimestampFormat> = ["iso", "unix", "readable"];
+        
+        if (!validFormats.includes(format as TimestampFormat)) {
+          return {
+            contents: [
+              {
+                uri: uri.href,
+                mimeType: MIME_TYPE_PLAIN,
+                text: `Unknown format: ${String(format)}. Use 'iso', 'unix', or 'readable'`,
+              },
+            ],
+          };
+        }
+
+        const validFormat = format as TimestampFormat;
+        
+        switch (validFormat) {
           case "iso":
             timestamp = now.toISOString();
             break;
@@ -43,8 +75,10 @@ const timestampModule: RegisterableModule = {
           case "readable":
             timestamp = now.toLocaleString();
             break;
-          default:
-            timestamp = `Unknown format: ${String(format)}. Use 'iso', 'unix', or 'readable'`;
+          default: {
+            const _exhaustive: never = validFormat;
+            return _exhaustive;
+          }
         }
 
         return {
