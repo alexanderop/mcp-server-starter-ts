@@ -17,6 +17,13 @@ const timestampModule: RegisterableModule = {
             { uri: "timestamp://readable", name: "Human-readable format" },
           ],
         }),
+        complete: {
+          format: (value) => {
+            return ["iso", "unix", "readable"].filter(f => 
+              f.toLowerCase().startsWith(value.toLowerCase())
+            );
+          },
+        },
       }),
       {
         name: "Timestamp",
