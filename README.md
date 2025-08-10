@@ -22,13 +22,6 @@ graph LR
     B <--> D[Databases]
     B <--> E[APIs]
     B <--> F[File Systems]
-    
-    style A fill:#e1f5fe
-    style B fill:#fff3e0
-    style C fill:#f3e5f5
-    style D fill:#f3e5f5
-    style E fill:#f3e5f5
-    style F fill:#f3e5f5
 ```
 
 This starter template provides:
@@ -163,10 +156,6 @@ flowchart TB
     Register3 --> Server
     
     Server --> Client([Client Connects])
-    
-    style Start fill:#e8f5e9
-    style Client fill:#e3f2fd
-    style Server fill:#fff3e0
 ```
 
 > [!TIP]
@@ -560,22 +549,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - ✅ **Error Handling**: Always handle errors gracefully and provide meaningful messages
 - ✅ **Validation**: Use Zod schemas to validate all inputs
 - ✅ **Testing**: Write tests for critical functionality
-
-### Security
-> [!CAUTION]
-> Security considerations for production deployments:
-
-- 🔒 **Input Validation**: Always validate and sanitize user inputs
-- 🔒 **Access Control**: Implement proper authentication if exposing sensitive data
-- 🔒 **Rate Limiting**: Consider implementing rate limits for resource-intensive operations
-- 🔒 **Secrets Management**: Never hardcode secrets; use environment variables
-- 🔒 **Audit Logging**: Log all tool invocations for security auditing
-
-### Performance
-- ⚡ **Async Operations**: Use async/await for I/O operations
-- ⚡ **Caching**: Implement caching for frequently accessed resources
-- ⚡ **Lazy Loading**: Load resources only when needed
-- ⚡ **Error Recovery**: Implement retry logic for transient failures
 
 ---
 
