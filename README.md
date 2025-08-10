@@ -358,6 +358,84 @@ This command:
 3. Connects to your server
 4. Provides an interactive UI to test tools, resources, and prompts
 
+### Manual Testing with JSON-RPC
+
+You can also test your server directly using JSON-RPC messages. This is useful for debugging or understanding the protocol:
+
+```bash
+# Build the server first
+npm run build
+
+# Test with direct JSON-RPC messages
+echo '<JSON_MESSAGE>' | node build/index.js
+```
+
+#### Example: Initialize Connection
+
+```bash
+echo '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"1.0.0","clientInfo":{"name":"test","version":"1.0.0"},"capabilities":{}}}' | node build/index.js
+```
+
+Expected response:
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "result": {
+    "protocolVersion": "2025-06-18",
+    "capabilities": {
+      "tools": {"listChanged": true},
+      "resources": {"listChanged": true},
+      "prompts": {"listChanged": true}
+    },
+    "serverInfo": {
+      "name": "mcp-server-starter",
+      "version": "1.0.0"
+    }
+  }
+}
+```
+
+#### Example: List Available Tools
+
+```bash
+# Send both initialize and list tools commands
+echo -e '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"1.0.0","clientInfo":{"name":"test","version":"1.0.0"},"capabilities":{}}}\n{"jsonrpc":"2.0","id":2,"method":"tools/list"}' | node build/index.js 2>/dev/null | grep -A10 '"id":2'
+```
+
+#### Example: Call the Echo Tool
+
+```bash
+# Initialize, then call the echo tool
+echo -e '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"1.0.0","clientInfo":{"name":"test","version":"1.0.0"},"capabilities":{}}}\n{"jsonrpc":"2.0","id":2,"method":"tools/call","params":{"name":"echo","arguments":{"text":"Hello, MCP!"}}}' | node build/index.js 2>/dev/null | grep -A5 '"id":2'
+```
+
+#### Example: List Resources
+
+```bash
+echo -e '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"1.0.0","clientInfo":{"name":"test","version":"1.0.0"},"capabilities":{}}}\n{"jsonrpc":"2.0","id":2,"method":"resources/list"}' | node build/index.js 2>/dev/null | grep -A10 '"id":2'
+```
+
+#### Example: Read a Resource
+
+```bash
+# Read the timestamp resource
+echo -e '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"1.0.0","clientInfo":{"name":"test","version":"1.0.0"},"capabilities":{}}}\n{"jsonrpc":"2.0","id":2,"method":"resources/read","params":{"uri":"timestamp://current/iso"}}' | node build/index.js 2>/dev/null | grep -A10 '"id":2'
+```
+
+#### Example: List Prompts
+
+```bash
+echo -e '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"1.0.0","clientInfo":{"name":"test","version":"1.0.0"},"capabilities":{}}}\n{"jsonrpc":"2.0","id":2,"method":"prompts/list"}' | node build/index.js 2>/dev/null | grep -A10 '"id":2'
+```
+
+> [!TIP]
+> When testing manually:
+> - Always send the `initialize` method first to establish the connection
+> - Use `2>/dev/null` to suppress stderr output (module loading logs)
+> - Use `grep` to filter the specific response you're interested in
+> - For prettier output, pipe through `jq` if you have it installed: `| jq .`
+
 ## ⚙️ Configuration
 
 ### TypeScript Configuration
