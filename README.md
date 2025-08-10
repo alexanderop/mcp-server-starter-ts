@@ -358,6 +358,89 @@ This command:
 3. Connects to your server
 4. Provides an interactive UI to test tools, resources, and prompts
 
+### Interactive Development Mode
+
+For rapid testing and development, use the interactive dev mode:
+
+```bash
+npm run dev
+```
+
+This starts an interactive REPL where you can paste JSON-RPC messages directly and see responses in real-time. Perfect for testing your MCP server during development!
+
+### JSON-RPC Examples for Dev Mode
+
+Once you run `npm run dev`, you can paste these JSON-RPC messages directly.
+
+> [!IMPORTANT]
+> **MCP Protocol Handshake Required**
+> 
+> The MCP protocol requires a specific initialization sequence before you can use tools, resources, or prompts:
+> 
+> 1. **Initialize Request** - Client sends capabilities and receives server capabilities
+> 2. **Initialized Notification** - Client confirms it's ready (no response expected)
+> 
+> **Why is the initialized notification needed?**
+> - It confirms the client has processed the initialization response and is ready
+> - It enables bidirectional communication - after this, the server can send requests to the client
+> - Without it, the server won't send notifications (like `tools/list_changed`) or make requests (like `sampling/createMessage`)
+> - This follows a pattern similar to TCP's handshake, ensuring both parties are ready before actual communication begins
+> 
+> The dev server does NOT automatically perform this handshake. You must send these messages manually first.
+
+#### 1. Initialize Connection (Required First!)
+
+Step 1 - Send initialize request:
+```json
+{"jsonrpc":"2.0","method":"initialize","params":{"protocolVersion":"1.0.0","capabilities":{},"clientInfo":{"name":"dev-client","version":"1.0.0"}},"id":1}
+```
+
+Step 2 - After receiving the response, send initialized notification:
+```json
+{"jsonrpc":"2.0","method":"notifications/initialized"}
+```
+
+Now the server is ready to handle requests!
+
+#### 2. List Available Tools
+```json
+{"jsonrpc":"2.0","method":"tools/list","params":{},"id":2}
+```
+
+#### 3. Call the Echo Tool
+```json
+{"jsonrpc":"2.0","method":"tools/call","params":{"name":"echo","arguments":{"text":"Hello, MCP!"}},"id":3}
+```
+
+#### 4. List Resources
+```json
+{"jsonrpc":"2.0","method":"resources/list","params":{},"id":4}
+```
+
+#### 5. Read a Resource
+```json
+{"jsonrpc":"2.0","method":"resources/read","params":{"uri":"timestamp://current/iso"},"id":5}
+```
+
+#### 6. List Prompts
+```json
+{"jsonrpc":"2.0","method":"prompts/list","params":{},"id":6}
+```
+
+#### 7. Get a Prompt
+```json
+{"jsonrpc":"2.0","method":"prompts/get","params":{"name":"generate-readme","arguments":{"projectName":"My Project","description":"A cool project"}},"id":7}
+```
+
+> [!TIP]
+> **Using Dev Mode:**
+> 1. Run `npm run dev` to start the interactive server
+> 2. Copy any JSON-RPC message above and paste it into the terminal
+> 3. The server will show the response with syntax highlighting
+> 4. Type `help` for available commands or `exit` to quit
+> 
+> **Important:** Always send the initialize message first to establish the connection!
+
 ## ⚙️ Configuration
 
 ### TypeScript Configuration
@@ -380,6 +463,7 @@ The project uses strict TypeScript settings for maximum type safety. Key configu
 | `npm test` | Run tests |
 | `npm run test:watch` | Run tests in watch mode |
 | `npm run inspect` | Launch MCP Inspector |
+| `npm run dev` | Interactive development mode |
 
 ## 🔌 Integration
 

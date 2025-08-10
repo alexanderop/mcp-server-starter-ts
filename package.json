@@ -11,7 +11,8 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "typecheck": "tsc --noEmit",
-    "inspect": "npm run build && npx @modelcontextprotocol/inspector node build/index.js"
+    "inspect": "npm run build && npx @modelcontextprotocol/inspector node build/index.js",
+    "dev": "npm run build && node dev"
   },
   "keywords": [
     "mcp",
