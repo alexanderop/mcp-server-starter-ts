@@ -11,8 +11,8 @@ export const registerableModuleSchema = z.object({
   name: z.string(),
   description: z.string().optional(),
   register: z.function()
-    .args(z.any()) // McpServer type is complex, using any for the argument
-    .returns(z.union([z.void(), z.promise(z.void())])), // Support both sync and async
+    .args(z.any())
+    .returns(z.union([z.void(), z.promise(z.void())]))
 });
 
 export type RegisterableModule = z.infer<typeof registerableModuleSchema> & {

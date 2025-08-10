@@ -3,7 +3,6 @@ import { z } from "zod";
 import type { RegisterableModule } from "../registry/types.js";
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 
-// Define the schema separately for better type inference
 const argsSchema = {
   projectType: completable(
     z.string().describe("Type of project"),
@@ -32,7 +31,6 @@ const argsSchema = {
   ),
 } as const;
 
-// The handler automatically gets the correct types from the schema
 const generateReadmeModule: RegisterableModule = {
   type: "prompt",
   name: "generate-readme",
@@ -52,7 +50,7 @@ const generateReadmeModule: RegisterableModule = {
             role: "user",
             content: {
               type: "text",
-              text: `Generate a professional README.md file for a ${projectType ?? "general"} project with ${style ?? "standard"} style. 
+              text: `Generate a professional README.md file for a ${projectType} project with ${style} style. 
           
 Provide a comprehensive README with the following sections:
 - Project title and description

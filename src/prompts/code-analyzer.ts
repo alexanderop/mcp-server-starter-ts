@@ -41,16 +41,12 @@ const codeAnalyzerModule: RegisterableModule = {
         description: "Analyze code for security, performance, style issues, and bugs",
         argsSchema: codeAnalyzerSchema,
       },
-      // The handler automatically gets typed arguments (all strings for prompts)
       ({ code, language, analysisType, verbose }) => {
-        // All arguments are strings due to MCP prompt limitations
-        // But we still get type safety and completions!
-        
         const analysisPrompt = analysisType === "all" 
           ? "Analyze this code for security issues, performance problems, style violations, and bugs"
           : `Analyze this code specifically for ${analysisType} issues`;
         
-        const isVerbose = verbose?.toLowerCase() === "yes";
+        const isExpanded = verbose.toLowerCase() === "yes";
         
         return {
           messages: [
@@ -61,7 +57,7 @@ const codeAnalyzerModule: RegisterableModule = {
                 text: `${analysisPrompt}.
                 
 Language: ${language}
-Verbose: ${isVerbose ? "Yes, provide detailed explanations" : "No, be concise"}
+Verbose: ${isExpanded ? "Yes, provide detailed explanations" : "No, be concise"}
 
 Code to analyze:
 \`\`\`${language}
@@ -72,7 +68,7 @@ Please provide:
 1. Issues found (if any)
 2. Severity level for each issue
 3. Recommended fixes
-${isVerbose ? "4. Detailed explanation of why each issue matters" : ""}`,
+${isExpanded ? "4. Detailed explanation of why each issue matters" : ""}`,
               },
             },
           ],

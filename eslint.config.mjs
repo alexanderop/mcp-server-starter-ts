@@ -79,14 +79,6 @@ export default tseslint.config(
           leadingUnderscore: 'allow',
           trailingUnderscore: 'forbid'
         },
-        // Boolean variables - prefixed with is/has/should/can/did/will
-        {
-          selector: 'variable',
-          types: ['boolean'],
-          format: ['camelCase'],
-          prefix: ['is', 'has', 'should', 'can', 'did', 'will', 'was', 'are', 'were'],
-          leadingUnderscore: 'allow'
-        },
         // Constants - UPPER_CASE
         {
           selector: 'variable',
@@ -153,6 +145,12 @@ export default tseslint.config(
           minimumDescriptionLength: 10
         }
       ],
+      
+      // Disallow all comments
+      'no-warning-comments': 'error',
+      'no-inline-comments': 'error',
+      'multiline-comment-style': ['error', 'starred-block'],
+      'spaced-comment': 'error',
       
       // Additional type safety rules
       '@typescript-eslint/prefer-nullish-coalescing': 'error',

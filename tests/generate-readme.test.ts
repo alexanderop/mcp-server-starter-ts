@@ -11,8 +11,7 @@ describe("Generate README Prompt Tests", () => {
       
       assert(readmePrompt !== undefined, "Generate README prompt should be listed");
       assert(
-        readmePrompt.description?.includes("Generate a README") || 
-        readmePrompt.description === "Generate a README file for a project",
+        readmePrompt.description?.includes("Generate a README") ?? false,
         "Generate README prompt should have correct description"
       );
     });
