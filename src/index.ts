@@ -10,6 +10,7 @@ const server = new McpServer({
     tools: {},
     resources: {},
     prompts: {},
+    completions: {},
   },
 });
 

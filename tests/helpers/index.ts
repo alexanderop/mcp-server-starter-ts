@@ -6,6 +6,6 @@ export {
   assertToolError,
   assertResourceContent,
   assertJSONResource,
-} from "./test-client.ts";
+} from "./test-client.js";
 
 export type { TestClientConfig } from "./test-client.ts";

@@ -105,8 +105,6 @@ describe("Timestamp Resource Tests", () => {
           // Should be a non-empty string
           assert(text.length > 0, "Readable timestamp should not be empty");
           
-          // Should contain date components (varies by locale)
-          // At minimum, should have numbers for day/month/year
           assert(/\d/.test(text), "Should contain numeric date components");
         }
       });
