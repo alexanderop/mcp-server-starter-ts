@@ -41,6 +41,7 @@ Whether you're building integrations for databases, APIs, file systems, or custo
 - [Quick Start](#-quick-start)
 - [Project Structure](#-project-structure)
 - [Development Guide](#-development-guide)
+  - [Using Code Generators](#using-code-generators)
   - [Adding a New Tool](#adding-a-new-tool)
   - [Adding a Resource](#adding-a-resource)
   - [Adding a Prompt](#adding-a-prompt)
@@ -60,6 +61,7 @@ Whether you're building integrations for databases, APIs, file systems, or custo
 - 🔍 **MCP Inspector Support** - Test your server with the official MCP Inspector
 - 📝 **Extensible Architecture** - Clear patterns for adding new capabilities
 - 🎯 **Example Implementation** - Working echo tool demonstrates the pattern
+- ⚡ **Code Generators** - Hygen scaffolding for rapid module creation
 
 ## 📚 Prerequisites
 
@@ -77,7 +79,7 @@ Whether you're building integrations for databases, APIs, file systems, or custo
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/mcp-server-starter-ts.git
+git clone https://github.com/alexanderop/mcp-server-starter-ts.git
 cd mcp-server-starter-ts
 
 # Install dependencies
@@ -130,6 +132,10 @@ mcp-server-starter-ts/
 │   ├── resources/            # Resource implementations (empty by default)
 │   └── prompts/              # Prompt implementations (empty by default)
 ├── tests/                    # Test files
+├── _templates/               # Hygen generator templates
+│   ├── tool/new/            # Tool generator
+│   ├── prompt/new/          # Prompt generator
+│   └── resource/new/        # Resource generator
 ├── build/                    # Compiled JavaScript (generated)
 ├── mcp.json                  # MCP server configuration
 ├── package.json              # Node.js dependencies
@@ -163,6 +169,51 @@ flowchart TB
 
 ## 🛠️ Development Guide
 
+### Using Code Generators
+
+> [!TIP]
+> The fastest way to create new modules is using the built-in Hygen generators!
+
+This project includes Hygen scaffolding for rapid module creation. Each generator creates both the implementation file and a corresponding test file.
+
+#### Generate a New Tool
+```bash
+npm run gen:tool
+```
+You'll be prompted for:
+- **Name**: Enter in kebab-case (e.g., `text-transform`)
+- **Description**: Brief description of what the tool does
+
+#### Generate a New Prompt
+```bash
+npm run gen:prompt
+```
+You'll be prompted for:
+- **Name**: Enter in kebab-case (e.g., `code-review`)
+- **Description**: Brief description of the prompt template
+
+#### Generate a New Resource
+```bash
+npm run gen:resource
+```
+You'll be prompted for:
+- **Name**: Enter in kebab-case (e.g., `app-status`)
+- **Description**: Brief description of the resource
+
+#### Command Line Usage
+You can also provide parameters directly:
+```bash
+npx hygen tool new --name my-tool --description "Does something useful"
+npx hygen prompt new --name my-prompt --description "Generates helpful text"
+npx hygen resource new --name my-resource --description "Provides data"
+```
+
+Generated files:
+- **Implementation**: `src/{tools|prompts|resources}/[name].ts`
+- **Test**: `tests/[name].test.ts`
+
+The auto-loader automatically discovers and registers all generated modules - no additional configuration needed!
+
 ### Module Types Overview
 
 ```mermaid
@@ -176,10 +227,6 @@ graph TD
     Tools --> Example1["Examples:<br/>• Database queries<br/>• API calls<br/>• File operations"]
     Resources --> Example2["Examples:<br/>• Configuration files<br/>• Documentation<br/>• Static data"]
     Prompts --> Example3["Examples:<br/>• Code review templates<br/>• Analysis prompts<br/>• Task templates"]
-    
-    style Tools fill:#e3f2fd
-    style Resources fill:#f3e5f5
-    style Prompts fill:#e8f5e9
 ```
 
 ### Adding a New Tool
@@ -464,6 +511,9 @@ The project uses strict TypeScript settings for maximum type safety. Key configu
 | `npm run test:watch` | Run tests in watch mode |
 | `npm run inspect` | Launch MCP Inspector |
 | `npm run dev` | Interactive development mode |
+| `npm run gen:tool` | Generate a new tool with test |
+| `npm run gen:prompt` | Generate a new prompt with test |
+| `npm run gen:resource` | Generate a new resource with test |
 
 ## 🔌 Integration
 
@@ -622,11 +672,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 | TypeScript errors | Run `npm run typecheck` to identify type issues |
 | Auto-loading fails | Check file names and ensure modules are in correct directories |
 
-## 💡 Best Practices
-
-> [!TIP]
-> Follow these practices for a robust MCP server:
-
 ### Development
 - ✅ **Type Safety**: Use TypeScript's strict mode for catching errors early
 - ✅ **Modular Design**: Keep tools, resources, and prompts focused on single responsibilities
@@ -640,6 +685,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 Built with ❤️ for the MCP community
 
-[Report Issues](https://github.com/yourusername/mcp-server-starter-ts/issues) · [Request Features](https://github.com/yourusername/mcp-server-starter-ts/issues) · [Documentation](https://modelcontextprotocol.io)
+[Report Issues](https://github.com/alexanderop/mcp-server-starter-ts/issues) · [Request Features](https://github.com/alexanderop/mcp-server-starter-ts/issues) · [Documentation](https://modelcontextprotocol.io)
 
 </div>

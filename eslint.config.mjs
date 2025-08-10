@@ -14,6 +14,7 @@ export default tseslint.config(
       parserOptions: {
         projectService: {
           allowDefaultProject: ['tests/*.ts', 'tests/*.test.ts', 'tests/helpers/*.ts'],
+          maximumDefaultProjectFileMatchCount_THIS_WILL_SLOW_DOWN_LINTING: 10,
         },
         tsconfigRootDir: import.meta.dirname,
       },
@@ -238,6 +239,6 @@ export default tseslint.config(
   },
   {
     // Ignore build output and common directories
-    ignores: ['build/**', 'dist/**', 'node_modules/**', 'coverage/**', 'eslint.config.mjs', 'dev.js'],
+    ignores: ['build/**', 'dist/**', 'node_modules/**', 'coverage/**', 'eslint.config.mjs', 'dev.js', '_templates/**'],
   }
 );
