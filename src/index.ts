@@ -25,6 +25,28 @@
  * - **Resources** from `src/resources/` - Provide read-only data access
  * - **Prompts** from `src/prompts/` - Reusable prompt templates
  * 
+ * @mermaid
+ * ```mermaid
+ * graph LR
+ *     Client[MCP Client] <-->|JSON-RPC| Server[MCP Server]
+ *     
+ *     Server --> Tools[Tools]
+ *     Server --> Resources[Resources]
+ *     Server --> Prompts[Prompts]
+ *     
+ *     Tools --> Echo[echo.ts]
+ *     Tools --> Custom[custom-tool.ts]
+ *     
+ *     Resources --> System[system-info.ts]
+ *     Resources --> Time[timestamp.ts]
+ *     
+ *     Prompts --> Analyzer[code-analyzer.ts]
+ *     Prompts --> Readme[generate-readme.ts]
+ *     
+ *     style Server fill:#f9f,stroke:#333,stroke-width:2px
+ *     style Client fill:#bbf,stroke:#333,stroke-width:2px
+ * ```
+ * 
  * @see {@link autoRegisterModules} for module discovery details
  * @see {@link https://modelcontextprotocol.io} for MCP protocol documentation
  */

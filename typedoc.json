@@ -35,7 +35,7 @@
     "inherited": true,
     "external": false
   },
-  "plugin": ["typedoc-plugin-coverage"],
+  "plugin": ["typedoc-plugin-coverage", "typedoc-plugin-mermaid"],
   "coverageLabel": "Documentation",
   "requiredToBeDocumented": ["Enum", "EnumMember", "Variable", "Function", "Class", "Interface", "Property", "Method", "TypeAlias"]
 }

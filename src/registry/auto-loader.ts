@@ -28,6 +28,30 @@ import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
  * 4. Registers valid modules with the MCP server
  * 5. Reports registration summary and any failures
  * 
+ * @mermaid
+ * ```mermaid
+ * flowchart TD
+ *     Start([Auto-Register Start]) --> Scan[Scan Module Directories]
+ *     Scan --> Tools[src/tools/]
+ *     Scan --> Resources[src/resources/]
+ *     Scan --> Prompts[src/prompts/]
+ *     
+ *     Tools --> LoadFiles[Load .ts Files]
+ *     Resources --> LoadFiles
+ *     Prompts --> LoadFiles
+ *     
+ *     LoadFiles --> Validate{Valid Module?}
+ *     Validate -->|Yes| Register[Register with MCP Server]
+ *     Validate -->|No| Skip[Skip File]
+ *     
+ *     Register --> Success[✓ Module Registered]
+ *     Skip --> Log[Log Warning]
+ *     
+ *     Success --> Summary[Report Summary]
+ *     Log --> Summary
+ *     Summary --> End([Complete])
+ * ```
+ * 
  * @param server - The MCP server instance to register modules with
  * @returns Promise that resolves when all modules are processed
  * 
