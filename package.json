@@ -1,5 +1,5 @@
 {
-  "name": "mcp-hello-world",
+  "name": "mcp-typescript-starter",
   "version": "1.0.0",
   "description": "A minimalistic MCP server demonstrating tools, resources, and prompts",
   "main": "index.js",
