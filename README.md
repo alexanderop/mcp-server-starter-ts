@@ -358,83 +358,88 @@ This command:
 3. Connects to your server
 4. Provides an interactive UI to test tools, resources, and prompts
 
-### Manual Testing with JSON-RPC
+### Interactive Development Mode
 
-You can also test your server directly using JSON-RPC messages. This is useful for debugging or understanding the protocol:
-
-```bash
-# Build the server first
-npm run build
-
-# Test with direct JSON-RPC messages
-echo '<JSON_MESSAGE>' | node build/index.js
-```
-
-#### Example: Initialize Connection
+For rapid testing and development, use the interactive dev mode:
 
 ```bash
-echo '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"1.0.0","clientInfo":{"name":"test","version":"1.0.0"},"capabilities":{}}}' | node build/index.js
+npm run dev
 ```
 
-Expected response:
+This starts an interactive REPL where you can paste JSON-RPC messages directly and see responses in real-time. Perfect for testing your MCP server during development!
+
+### JSON-RPC Examples for Dev Mode
+
+Once you run `npm run dev`, you can paste these JSON-RPC messages directly.
+
+> [!IMPORTANT]
+> **MCP Protocol Handshake Required**
+> 
+> The MCP protocol requires a specific initialization sequence before you can use tools, resources, or prompts:
+> 
+> 1. **Initialize Request** - Client sends capabilities and receives server capabilities
+> 2. **Initialized Notification** - Client confirms it's ready (no response expected)
+> 
+> **Why is the initialized notification needed?**
+> - It confirms the client has processed the initialization response and is ready
+> - It enables bidirectional communication - after this, the server can send requests to the client
+> - Without it, the server won't send notifications (like `tools/list_changed`) or make requests (like `sampling/createMessage`)
+> - This follows a pattern similar to TCP's handshake, ensuring both parties are ready before actual communication begins
+> 
+> The dev server does NOT automatically perform this handshake. You must send these messages manually first.
+
+#### 1. Initialize Connection (Required First!)
+
+Step 1 - Send initialize request:
 ```json
-{
-  "jsonrpc": "2.0",
-  "id": 1,
-  "result": {
-    "protocolVersion": "2025-06-18",
-    "capabilities": {
-      "tools": {"listChanged": true},
-      "resources": {"listChanged": true},
-      "prompts": {"listChanged": true}
-    },
-    "serverInfo": {
-      "name": "mcp-server-starter",
-      "version": "1.0.0"
-    }
-  }
-}
+{"jsonrpc":"2.0","method":"initialize","params":{"protocolVersion":"1.0.0","capabilities":{},"clientInfo":{"name":"dev-client","version":"1.0.0"}},"id":1}
 ```
 
-#### Example: List Available Tools
-
-```bash
-# Send both initialize and list tools commands
-echo -e '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"1.0.0","clientInfo":{"name":"test","version":"1.0.0"},"capabilities":{}}}\n{"jsonrpc":"2.0","id":2,"method":"tools/list"}' | node build/index.js 2>/dev/null | grep -A10 '"id":2'
+Step 2 - After receiving the response, send initialized notification:
+```json
+{"jsonrpc":"2.0","method":"notifications/initialized"}
 ```
 
-#### Example: Call the Echo Tool
+Now the server is ready to handle requests!
 
-```bash
-# Initialize, then call the echo tool
-echo -e '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"1.0.0","clientInfo":{"name":"test","version":"1.0.0"},"capabilities":{}}}\n{"jsonrpc":"2.0","id":2,"method":"tools/call","params":{"name":"echo","arguments":{"text":"Hello, MCP!"}}}' | node build/index.js 2>/dev/null | grep -A5 '"id":2'
+#### 2. List Available Tools
+```json
+{"jsonrpc":"2.0","method":"tools/list","params":{},"id":2}
 ```
 
-#### Example: List Resources
-
-```bash
-echo -e '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"1.0.0","clientInfo":{"name":"test","version":"1.0.0"},"capabilities":{}}}\n{"jsonrpc":"2.0","id":2,"method":"resources/list"}' | node build/index.js 2>/dev/null | grep -A10 '"id":2'
+#### 3. Call the Echo Tool
+```json
+{"jsonrpc":"2.0","method":"tools/call","params":{"name":"echo","arguments":{"text":"Hello, MCP!"}},"id":3}
 ```
 
-#### Example: Read a Resource
-
-```bash
-# Read the timestamp resource
-echo -e '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"1.0.0","clientInfo":{"name":"test","version":"1.0.0"},"capabilities":{}}}\n{"jsonrpc":"2.0","id":2,"method":"resources/read","params":{"uri":"timestamp://current/iso"}}' | node build/index.js 2>/dev/null | grep -A10 '"id":2'
+#### 4. List Resources
+```json
+{"jsonrpc":"2.0","method":"resources/list","params":{},"id":4}
 ```
 
-#### Example: List Prompts
+#### 5. Read a Resource
+```json
+{"jsonrpc":"2.0","method":"resources/read","params":{"uri":"timestamp://current/iso"},"id":5}
+```
 
-```bash
-echo -e '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"1.0.0","clientInfo":{"name":"test","version":"1.0.0"},"capabilities":{}}}\n{"jsonrpc":"2.0","id":2,"method":"prompts/list"}' | node build/index.js 2>/dev/null | grep -A10 '"id":2'
+#### 6. List Prompts
+```json
+{"jsonrpc":"2.0","method":"prompts/list","params":{},"id":6}
+```
+
+#### 7. Get a Prompt
+```json
+{"jsonrpc":"2.0","method":"prompts/get","params":{"name":"generate-readme","arguments":{"projectName":"My Project","description":"A cool project"}},"id":7}
 ```
 
 > [!TIP]
-> When testing manually:
-> - Always send the `initialize` method first to establish the connection
-> - Use `2>/dev/null` to suppress stderr output (module loading logs)
-> - Use `grep` to filter the specific response you're interested in
-> - For prettier output, pipe through `jq` if you have it installed: `| jq .`
+> **Using Dev Mode:**
+> 1. Run `npm run dev` to start the interactive server
+> 2. Copy any JSON-RPC message above and paste it into the terminal
+> 3. The server will show the response with syntax highlighting
+> 4. Type `help` for available commands or `exit` to quit
+> 
+> **Important:** Always send the initialize message first to establish the connection!
 
 ## ⚙️ Configuration
 
@@ -458,6 +463,7 @@ The project uses strict TypeScript settings for maximum type safety. Key configu
 | `npm test` | Run tests |
 | `npm run test:watch` | Run tests in watch mode |
 | `npm run inspect` | Launch MCP Inspector |
+| `npm run dev` | Interactive development mode |
 
 ## 🔌 Integration
 
