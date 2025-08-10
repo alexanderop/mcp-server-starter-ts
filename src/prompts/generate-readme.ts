@@ -1,8 +1,23 @@
+/**
+ * @module Prompts/GenerateReadme
+ * @category Prompts
+ * 
+ * Professional README.md generator for various project types.
+ * Creates comprehensive documentation following best practices.
+ * 
+ * @since 1.0.0
+ */
+
 import { completable } from "@modelcontextprotocol/sdk/server/completable.js";
 import { z } from "zod";
 import type { RegisterableModule } from "../registry/types.js";
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 
+/**
+ * Schema for README generator arguments with auto-completion.
+ * 
+ * @internal
+ */
 const argsSchema = {
   projectType: completable(
     z.string().describe("Type of project"),
@@ -31,6 +46,45 @@ const argsSchema = {
   ),
 } as const;
 
+/**
+ * README generator prompt module.
+ * 
+ * Generates professional README.md files tailored to specific project types
+ * and documentation styles. Includes all essential sections for open-source projects.
+ * 
+ * @example Basic usage
+ * ```typescript
+ * const prompt = await client.getPrompt("generate-readme", {
+ *   projectType: "typescript",
+ *   style: "comprehensive"
+ * });
+ * // Generates a comprehensive README for a TypeScript project
+ * ```
+ * 
+ * @example Project types supported
+ * - **Language-specific**: typescript, javascript, python, rust, go, java, csharp
+ * - **Application types**: web, api, library, cli-tool
+ * 
+ * @example Documentation styles
+ * - **minimal**: Essential sections only
+ * - **standard**: Common sections for most projects
+ * - **comprehensive**: All recommended sections
+ * - **detailed**: Extensive documentation with examples
+ * 
+ * @example Generated sections
+ * The prompt generates READMEs with:
+ * - Project title and badges
+ * - Description and features
+ * - Installation instructions
+ * - Usage examples with code snippets
+ * - API documentation (if applicable)
+ * - Contributing guidelines
+ * - License information
+ * - Credits and acknowledgments
+ * 
+ * @see {@link https://www.makeareadme.com/} Best practices for README files
+ * @see {@link https://github.com/othneildrew/Best-README-Template} Popular README template
+ */
 const generateReadmeModule: RegisterableModule = {
   type: "prompt",
   name: "generate-readme",
