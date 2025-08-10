@@ -398,6 +398,72 @@ Tests are automatically run in CI/CD pipelines. Ensure all tests pass before mer
 - `npm test` - Build and run all tests
 - `npm run test:run` - Run tests directly (Node.js version dependent)
 - `npm run typecheck` - Type check without emitting files
+- `npm run inspect` - Launch MCP Inspector for debugging
+
+## MCP Inspector
+
+The MCP Inspector is a powerful visual testing and debugging tool for MCP servers. It provides an interactive interface to test your server's tools, resources, and prompts during development.
+
+### What is the Inspector?
+
+The MCP Inspector is an official debugging utility that:
+- Provides a web-based UI for testing MCP server functionality
+- Allows you to interactively call tools with different parameters
+- Lets you read resources and view their responses in real-time
+- Helps test prompts with various inputs
+- Shows detailed request/response logs for debugging
+- Validates your server's protocol implementation
+
+### How to Use the Inspector
+
+1. **Launch the Inspector**:
+```bash
+npm run inspect
+```
+
+This command:
+- First builds your TypeScript server (`npm run build`)
+- Then launches the MCP Inspector with your server (`npx @modelcontextprotocol/inspector node build/index.js`)
+- Automatically opens your browser with the Inspector UI
+- Generates a secure session token for authentication
+
+2. **Inspector Interface**:
+The Inspector UI provides several tabs:
+- **Tools**: Test your server's tools by providing input parameters and viewing responses
+- **Resources**: Browse and read available resources
+- **Prompts**: Test prompt templates with different arguments
+- **Logs**: View detailed communication logs between the Inspector and your server
+
+3. **Testing Your Implementation**:
+- Select a tool/resource/prompt from the list
+- Fill in any required parameters in the UI
+- Click "Execute" to send the request to your server
+- View the response in the output panel
+- Check logs for detailed protocol messages
+
+### Benefits of Using the Inspector
+
+- **Visual Debugging**: See exactly what your server receives and returns
+- **Rapid Testing**: Quickly test different scenarios without writing client code
+- **Protocol Validation**: Ensures your server correctly implements the MCP specification
+- **Error Discovery**: Easily identify issues with parameter validation or response formatting
+- **Documentation**: Helps understand how your server behaves with different inputs
+
+### Security Note
+
+The Inspector runs a local proxy server that communicates with your MCP server. For security:
+- A random authentication token is generated each session
+- The proxy should not be exposed to untrusted networks
+- The Inspector has permissions to spawn local processes
+
+### Example Workflow
+
+1. Start the inspector: `npm run inspect`
+2. In the browser UI, select the "echo" tool
+3. Enter text in the parameter field
+4. Click "Execute" to test
+5. View the response showing your echoed text
+6. Check logs to see the full MCP protocol exchange
 
 ## License
 
