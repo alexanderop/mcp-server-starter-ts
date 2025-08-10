@@ -1,470 +1,561 @@
-# MCP Server Starter
+# MCP Server Starter (TypeScript)
 
-A minimal TypeScript starter template for building Model Context Protocol (MCP) servers.
+<div align="center">
 
-## What is MCP?
+[![MCP](https://img.shields.io/badge/MCP-v1.17.2-blue)](https://modelcontextprotocol.io)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.9.2-blue)](https://www.typescriptlang.org/)
+[![Node.js](https://img.shields.io/badge/Node.js-%3E%3D20.11.0-green)](https://nodejs.org/)
+[![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-MCP (Model Context Protocol) enables AI applications to connect with external systems through a standardized protocol. This starter template provides the basic structure to build your own MCP server.
+A minimal, production-ready TypeScript starter template for building [Model Context Protocol (MCP)](https://modelcontextprotocol.io) servers.
 
-## Features
+</div>
 
-This starter includes:
-- TypeScript configuration with strict type checking
-- MCP SDK integration  
-- Basic server setup with stdio transport
-- Example `echo` tool implementation
-- Example resources (static and dynamic)
-- Example `generate-readme` prompt
-- ESLint configuration
-- Build scripts
+## 🎯 Motivation
 
-## Quick Start
+The Model Context Protocol (MCP) is an open protocol that standardizes how AI applications connect to data sources and tools. Think of it as "USB-C for AI" - a universal standard that allows any AI model to connect with any data source or tool through a consistent interface.
 
-1. Install dependencies:
-```bash
-npm install
+```mermaid
+graph LR
+    A[AI Assistant<br/>Claude, GPT, etc.] <-->|MCP Protocol| B[MCP Server]
+    B <--> C[Your Tools<br/>& Resources]
+    B <--> D[Databases]
+    B <--> E[APIs]
+    B <--> F[File Systems]
 ```
 
-2. Build the server:
+This starter template provides:
+- ✅ **Minimal boilerplate** to get you started quickly
+- ✅ **Auto-loading architecture** for tools, resources, and prompts
+- ✅ **TypeScript best practices** with strict typing
+- ✅ **Production-ready structure** that scales with your project
+- ✅ **Working example** (echo tool) to demonstrate the pattern
+
+Whether you're building integrations for databases, APIs, file systems, or custom business tools, this template helps you create MCP servers that can be used by any MCP-compatible client (like Claude Desktop, IDEs, or custom applications).
+
+## 📋 Table of Contents
+
+- [Features](#-features)
+- [Prerequisites](#-prerequisites)
+- [Installation](#-installation)
+- [Quick Start](#-quick-start)
+- [Project Structure](#-project-structure)
+- [Development Guide](#-development-guide)
+  - [Adding a New Tool](#adding-a-new-tool)
+  - [Adding a Resource](#adding-a-resource)
+  - [Adding a Prompt](#adding-a-prompt)
+- [Testing with MCP Inspector](#-testing-with-mcp-inspector)
+- [Configuration](#-configuration)
+- [Commands](#-commands)
+- [Integration](#-integration)
+- [Contributing](#-contributing)
+- [License](#-license)
+
+## ✨ Features
+
+- 🚀 **Auto-loading Module System** - Drop new tools, resources, or prompts into their directories and they're automatically registered
+- 🛠️ **TypeScript First** - Full type safety with strict TypeScript configuration
+- 📦 **Minimal Dependencies** - Only essential packages included
+- 🧪 **Built-in Testing** - Uses Node.js native test runner
+- 🔍 **MCP Inspector Support** - Test your server with the official MCP Inspector
+- 📝 **Extensible Architecture** - Clear patterns for adding new capabilities
+- 🎯 **Example Implementation** - Working echo tool demonstrates the pattern
+
+## 📚 Prerequisites
+
+> [!IMPORTANT]
+> Ensure you have Node.js version 20.11.0 or higher installed before proceeding.
+
+- Node.js >= 20.11.0
+- npm or yarn
+- Basic understanding of TypeScript
+- Familiarity with the [Model Context Protocol](https://modelcontextprotocol.io) concepts
+
+## 📦 Installation
+
+### Clone and Setup
+
 ```bash
+# Clone the repository
+git clone https://github.com/yourusername/mcp-server-starter-ts.git
+cd mcp-server-starter-ts
+
+# Install dependencies
+npm install
+
+# Build the project
 npm run build
 ```
 
-3. Run the server:
-```bash
-node build/index.js
-```
+### Using as a Template
 
-## Project Structure
+You can also use this as a GitHub template:
+
+1. Click "Use this template" on GitHub
+2. Create your new repository
+3. Clone and start building your MCP server
+
+## 🚀 Quick Start
+
+> [!TIP]
+> Use the MCP Inspector to test your server interactively during development!
+
+1. **Build the server:**
+   ```bash
+   npm run build
+   ```
+
+2. **Test with MCP Inspector:**
+   ```bash
+   npm run inspect
+   ```
+   This opens the MCP Inspector where you can interact with your server's tools, resources, and prompts.
+
+3. **Run tests:**
+   ```bash
+   npm test
+   ```
+
+## 📁 Project Structure
 
 ```
 mcp-server-starter-ts/
 ├── src/
-│   └── index.ts      # Main server implementation
-├── build/            # Compiled JavaScript output
-├── package.json      # Dependencies and scripts
-├── tsconfig.json     # TypeScript configuration
-└── eslint.config.mjs # ESLint configuration
+│   ├── index.ts              # Main entry point
+│   ├── registry/             # Auto-loading system
+│   │   ├── auto-loader.ts    # Module auto-discovery
+│   │   └── types.ts          # TypeScript interfaces
+│   ├── tools/                # Tool implementations
+│   │   └── echo.ts           # Example echo tool
+│   ├── resources/            # Resource implementations (empty by default)
+│   └── prompts/              # Prompt implementations (empty by default)
+├── tests/                    # Test files
+├── build/                    # Compiled JavaScript (generated)
+├── mcp.json                  # MCP server configuration
+├── package.json              # Node.js dependencies
+├── tsconfig.json             # TypeScript configuration
+├── eslint.config.js          # ESLint configuration
+└── README.md
 ```
 
-## Example Tool
+### How Auto-Loading Works
 
-The starter includes a simple `echo` tool that demonstrates the basic structure:
-
-```typescript
-server.tool(
-  "echo",
-  "Echo back the provided text",
-  {
-    text: z.string().describe("Text to echo back"),
-  },
-  async ({ text }) => {
-    return {
-      content: [
-        {
-          type: "text",
-          text: text,
-        },
-      ],
-    };
-  }
-);
+```mermaid
+flowchart TB
+    Start([Server Starts]) --> Load[Auto-Loader Scans Directories]
+    Load --> Tools[/src/tools/*.js/]
+    Load --> Resources[/src/resources/*.js/]
+    Load --> Prompts[/src/prompts/*.js/]
+    
+    Tools --> Register1[Register Tool Modules]
+    Resources --> Register2[Register Resource Modules]
+    Prompts --> Register3[Register Prompt Modules]
+    
+    Register1 --> Server[MCP Server Ready]
+    Register2 --> Server
+    Register3 --> Server
+    
+    Server --> Client([Client Connects])
 ```
 
-## Example Resources
+> [!TIP]
+> Simply drop your module files into the appropriate directory (`tools/`, `resources/`, or `prompts/`) and they'll be automatically loaded when the server starts!
 
-### Resources vs Tools
+## 🛠️ Development Guide
 
-- **Resources**: Provide data/context to the AI without performing actions. Used for retrieving information.
-- **Tools**: Execute actions or operations that may have side effects. Used for performing tasks.
+### Module Types Overview
 
-### Static Resource: System Information
-
-A simple resource that provides system information about the server:
-
-```typescript
-server.resource(
-  "system-info",
-  "system://info",
-  {
-    name: "System Information",
-    description: "Get basic system information about the server",
-  },
-  async () => {
-    return {
-      contents: [
-        {
-          uri: "system://info",
-          mimeType: "application/json",
-          text: JSON.stringify({
-            platform: os.platform(),
-            architecture: os.arch(),
-            nodeVersion: process.version,
-            // ... more system info
-          }, null, 2),
-        },
-      ],
-    };
-  }
-);
+```mermaid
+graph TD
+    subgraph "MCP Server Capabilities"
+        Tools["🔧 Tools<br/>Execute actions & computations"]
+        Resources["📦 Resources<br/>Provide data & content"]
+        Prompts["💬 Prompts<br/>Reusable prompt templates"]
+    end
+    
+    Tools --> Example1["Examples:<br/>• Database queries<br/>• API calls<br/>• File operations"]
+    Resources --> Example2["Examples:<br/>• Configuration files<br/>• Documentation<br/>• Static data"]
+    Prompts --> Example3["Examples:<br/>• Code review templates<br/>• Analysis prompts<br/>• Task templates"]
+    
+    style Tools fill:#e3f2fd
+    style Resources fill:#f3e5f5
+    style Prompts fill:#e8f5e9
 ```
 
-### Dynamic Resource: Timestamp
+### Adding a New Tool
 
-A dynamic resource using `ResourceTemplate` that provides timestamps in different formats:
+> [!NOTE]
+> Tools are functions that can be called by the AI to perform specific actions or computations.
 
-```typescript
-server.registerResource(
-  "timestamp",
-  new ResourceTemplate("timestamp://{format}", {
-    list: async () => [
-      { uri: "timestamp://iso", name: "ISO 8601 format" },
-      { uri: "timestamp://unix", name: "Unix timestamp" },
-      { uri: "timestamp://readable", name: "Human-readable format" },
-    ],
-  }),
-  {
-    name: "Timestamp",
-    description: "Get current timestamp in various formats",
-  },
-  async (uri, { format }) => {
-    // Format-specific timestamp generation
-    // Returns timestamp in requested format
-  }
-);
-```
-
-Access examples:
-- `system://info` - Get system information
-- `timestamp://iso` - Get current time in ISO 8601 format
-- `timestamp://unix` - Get Unix timestamp
-- `timestamp://readable` - Get human-readable timestamp
-
-## Example Prompt
-
-### Prompts vs Tools vs Resources
-
-- **Prompts**: Reusable templates for LLM interactions (user-invoked)
-- **Tools**: Execute actions or operations that may have side effects
-- **Resources**: Provide data/context to the AI without performing actions
-
-### Generate README Prompt
-
-A prompt template for generating project documentation:
+Tools allow your MCP server to perform actions. Create a new file in `src/tools/`:
 
 ```typescript
-server.prompt(
-  "generate-readme",
-  "Generate a README file for a project",
-  {
-    projectName: z.string().describe("Name of the project"),
-    description: z.string().describe("Brief description of what the project does"),
-  },
-  ({ projectName, description }) => ({
-    messages: [
+// src/tools/calculate.ts
+import { z } from "zod";
+import type { RegisterableModule } from "../registry/types.js";
+import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+
+const calculateModule: RegisterableModule = {
+  type: "tool",
+  name: "calculate",
+  description: "Perform basic arithmetic calculations",
+  register(server: McpServer) {
+    server.tool(
+      "calculate",
+      "Perform basic arithmetic calculations",
       {
-        role: "user",
-        content: {
-          type: "text",
-          text: `Generate a professional README.md file for a project called "${projectName}". 
-          
-Project description: ${description}
-
-Please include sections for: installation, usage, features, contributing, and license.`,
-        },
+        operation: z.enum(["add", "subtract", "multiply", "divide"])
+          .describe("The arithmetic operation to perform"),
+        a: z.number().describe("First number"),
+        b: z.number().describe("Second number"),
       },
-    ],
-  })
-);
-```
-
-This prompt helps users quickly generate standardized documentation for their projects.
-
-## Extending the Server
-
-To add new capabilities:
-
-1. **Add Tools**: Define new tools using `server.tool()`
-2. **Add Resources**: Provide data using `server.resource()`
-3. **Add Prompts**: Create templates using `server.prompt()`
-
-## Integration
-
-To use this server with an MCP client:
-
-```json
-{
-  "mcpServers": {
-    "my-server": {
-      "command": "node",
-      "args": ["/path/to/build/index.js"],
-      "transport": "stdio"
-    }
+      (args) => {
+        let result: number;
+        switch (args.operation) {
+          case "add": result = args.a + args.b; break;
+          case "subtract": result = args.a - args.b; break;
+          case "multiply": result = args.a * args.b; break;
+          case "divide": 
+            if (args.b === 0) throw new Error("Division by zero");
+            result = args.a / args.b; 
+            break;
+        }
+        
+        return {
+          content: [
+            {
+              type: "text",
+              text: `Result: ${result}`,
+            },
+          ],
+        };
+      }
+    );
   }
-}
+};
+
+export default calculateModule;
 ```
 
-## Testing
+### Adding a Resource
 
-### Writing Tests
+> [!NOTE]
+> Resources provide read-only access to data that can be consumed by AI clients.
 
-This project uses Node.js's built-in test runner with the `node:test` and `node:assert` modules. Tests are located in the `tests/` directory and follow the naming convention `*.test.ts`.
-
-### Test Structure
-
-Here's how to write tests for MCP tools, resources, and prompts using the actual test helpers:
-
-#### Testing Tools
+Resources provide data that can be read by clients. Create a new file in `src/resources/`:
 
 ```typescript
-// tests/echo.test.ts
-import assert from "node:assert";
-import { describe, it } from "node:test";
-import { 
-  withTestClient, 
-  assertToolResponse,
-  assertToolError 
-} from "./helpers/test-client.js";
+// src/resources/config.ts
+import type { RegisterableModule } from "../registry/types.js";
+import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 
-describe("Echo Tool", () => {
-  it("should echo back the provided text", async () => {
-    await withTestClient(async (client) => {
-      const testText = "Hello, MCP!";
-      const response = await client.callTool("echo", { text: testText });
-      
-      assertToolResponse(response, testText);
-    });
-  });
+const configResource: RegisterableModule = {
+  type: "resource",
+  name: "config",
+  description: "Application configuration",
+  register(server: McpServer) {
+    server.resource(
+      "config://app/settings",
+      "Application settings",
+      "application/json",
+      async () => {
+        const settings = {
+          version: "1.0.0",
+          environment: process.env.NODE_ENV || "development",
+          features: {
+            autoSave: true,
+            darkMode: false,
+          }
+        };
+        
+        return {
+          contents: [
+            {
+              uri: "config://app/settings",
+              mimeType: "application/json",
+              text: JSON.stringify(settings, null, 2),
+            }
+          ]
+        };
+      }
+    );
+  }
+};
 
-  it("should reject empty string", async () => {
-    await withTestClient(async (client) => {
-      await assertToolError(
-        client.callTool("echo", { text: "" }),
-        "Text cannot be empty",
-        "Should reject empty text with validation error"
-      );
-    });
-  });
-});
+export default configResource;
 ```
 
-#### Testing Resources
+### Adding a Prompt
+
+> [!NOTE]
+> Prompts are reusable templates that help structure interactions with the AI model.
+
+Prompts are reusable prompt templates. Create a new file in `src/prompts/`:
 
 ```typescript
-// tests/system-info.test.ts
-import assert from "node:assert";
-import { describe, it } from "node:test";
-import { 
-  withTestClient, 
-  assertJSONResource
-} from "./helpers/test-client.js";
+// src/prompts/code-review.ts
+import { z } from "zod";
+import type { RegisterableModule } from "../registry/types.js";
+import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 
-describe("System Info Resource", () => {
-  it("should return system information", async () => {
-    await withTestClient(async (client) => {
-      const response = await client.readResource("system://info");
-      
-      const systemInfo = assertJSONResource(
-        response,
-        "system://info",
-        (data) => {
-          assert(data.platform.length > 0, "Should have platform");
-          assert(data.nodeVersion.length > 0, "Should have nodeVersion");
-          assert(typeof data.uptime === "number", "Uptime should be a number");
-        }
-      );
-    });
-  });
-});
+const codeReviewPrompt: RegisterableModule = {
+  type: "prompt",
+  name: "code-review",
+  description: "Generate a code review prompt",
+  register(server: McpServer) {
+    server.prompt(
+      "code-review",
+      "Generate a comprehensive code review",
+      {
+        language: z.string().describe("Programming language"),
+        code: z.string().describe("Code to review"),
+        focus: z.string().optional().describe("Specific areas to focus on"),
+      },
+      (args) => {
+        return {
+          messages: [
+            {
+              role: "user",
+              content: {
+                type: "text",
+                text: `Please review the following ${args.language} code:
+
+\`\`\`${args.language}
+${args.code}
+\`\`\`
+
+${args.focus ? `Focus areas: ${args.focus}` : ""}
+
+Please provide:
+1. Code quality assessment
+2. Potential bugs or issues
+3. Performance considerations
+4. Security concerns
+5. Suggestions for improvement`,
+              },
+            },
+          ],
+        };
+      }
+    );
+  }
+};
+
+export default codeReviewPrompt;
 ```
 
-#### Testing Dynamic Resources
+## 🔍 Testing with MCP Inspector
 
-```typescript
-// tests/timestamp.test.ts
-describe("Timestamp Resource", () => {
-  it("should return ISO format timestamp", async () => {
-    await withTestClient(async (client) => {
-      const response = await client.readResource("timestamp://iso");
-      
-      assertResourceContent(response, {
-        uri: "timestamp://iso",
-        mimeType: "text/plain",
-        contentValidator: (text) => {
-          // Verify ISO 8601 format
-          assert(text.match(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/));
-        }
-      });
-    });
-  });
+The MCP Inspector is a powerful tool for testing your server:
 
-  it("should return Unix timestamp", async () => {
-    await withTestClient(async (client) => {
-      const response = await client.readResource("timestamp://unix");
-      const timestamp = parseInt(response.contents[0].text);
-      
-      assert(timestamp > 0, "Timestamp should be positive");
-      assert(timestamp <= Date.now(), "Timestamp should not be in the future");
-    });
-  });
-});
-```
-
-#### Testing Prompts
-
-```typescript
-// tests/generate-readme.test.ts
-describe("Generate README Prompt", () => {
-  it("should generate prompt with correct parameters", async () => {
-    await withTestClient(async (client) => {
-      const result = await client.getPrompt("generate-readme", {
-        projectName: "TestProject",
-        description: "A test project"
-      });
-      
-      assert.strictEqual(result.messages[0].role, "user");
-      assert(result.messages[0].content.text.includes("TestProject"));
-      assert(result.messages[0].content.text.includes("A test project"));
-    });
-  });
-});
-```
-
-### Test Helpers
-
-The project includes comprehensive test utilities in `tests/helpers/`:
-
-```typescript
-// tests/helpers/test-client.ts
-import { Client } from "@modelcontextprotocol/sdk/client/index.js";
-import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
-
-// TestClient class for managing test connections
-export class TestClient {
-  async setup(): Promise<void>
-  async teardown(): Promise<void>
-  async callTool(name: string, args: Record<string, unknown>): Promise<CallToolResult>
-  async readResource(uri: string): Promise<ReadResourceResult>
-  // ... more methods
-}
-
-// Higher-order function for automatic setup/teardown
-export async function withTestClient<T>(
-  testFn: (client: TestClient) => Promise<T>
-): Promise<T>
-
-// Assertion helpers
-export function assertToolResponse(response, expectedContent, message?)
-export function assertJSONResource(resource, expectedUri, validator?)
-export function assertToolError(toolCall, errorMatcher?, message?)
-```
-
-### Running Tests
-
-```bash
-# Run all tests (builds first, then runs tests)
-npm test
-
-# Run tests directly (for Node.js 23+)
-npm run test:run
-
-# Run specific test file
-node --test tests/echo.test.ts
-
-# Run tests with specific Node version
-# For Node.js 23+: runs TypeScript tests directly
-# For older versions: compiles to JS first then runs
-```
-
-### Test Best Practices
-
-1. **Isolation**: Each test should be independent and not rely on other tests
-2. **Mocking**: Mock external dependencies and system calls
-3. **Coverage**: Aim for at least 80% code coverage
-4. **Descriptive Names**: Use clear, descriptive test names that explain what is being tested
-5. **Arrange-Act-Assert**: Structure tests with clear setup, execution, and verification phases
-6. **Edge Cases**: Test boundary conditions, error cases, and invalid inputs
-7. **Performance**: Include tests for performance-critical operations
-
-### Continuous Integration
-
-Tests are automatically run in CI/CD pipelines. Ensure all tests pass before merging pull requests.
-
-## Development Scripts
-
-- `npm run build` - Compile TypeScript to JavaScript
-- `npm run lint` - Run ESLint
-- `npm run lint:fix` - Auto-fix linting issues
-- `npm test` - Build and run all tests
-- `npm run test:run` - Run tests directly (Node.js version dependent)
-- `npm run typecheck` - Type check without emitting files
-- `npm run inspect` - Launch MCP Inspector for debugging
-
-## MCP Inspector
-
-The MCP Inspector is a powerful visual testing and debugging tool for MCP servers. It provides an interactive interface to test your server's tools, resources, and prompts during development.
-
-### What is the Inspector?
-
-The MCP Inspector is an official debugging utility that:
-- Provides a web-based UI for testing MCP server functionality
-- Allows you to interactively call tools with different parameters
-- Lets you read resources and view their responses in real-time
-- Helps test prompts with various inputs
-- Shows detailed request/response logs for debugging
-- Validates your server's protocol implementation
-
-### How to Use the Inspector
-
-1. **Launch the Inspector**:
 ```bash
 npm run inspect
 ```
 
 This command:
-- First builds your TypeScript server (`npm run build`)
-- Then launches the MCP Inspector with your server (`npx @modelcontextprotocol/inspector node build/index.js`)
-- Automatically opens your browser with the Inspector UI
-- Generates a secure session token for authentication
+1. Builds your TypeScript code
+2. Launches the MCP Inspector
+3. Connects to your server
+4. Provides an interactive UI to test tools, resources, and prompts
 
-2. **Inspector Interface**:
-The Inspector UI provides several tabs:
-- **Tools**: Test your server's tools by providing input parameters and viewing responses
-- **Resources**: Browse and read available resources
-- **Prompts**: Test prompt templates with different arguments
-- **Logs**: View detailed communication logs between the Inspector and your server
+## ⚙️ Configuration
 
-3. **Testing Your Implementation**:
-- Select a tool/resource/prompt from the list
-- Fill in any required parameters in the UI
-- Click "Execute" to send the request to your server
-- View the response in the output panel
-- Check logs for detailed protocol messages
+### TypeScript Configuration
 
-### Benefits of Using the Inspector
+The project uses strict TypeScript settings for maximum type safety. Key configurations in `tsconfig.json`:
 
-- **Visual Debugging**: See exactly what your server receives and returns
-- **Rapid Testing**: Quickly test different scenarios without writing client code
-- **Protocol Validation**: Ensures your server correctly implements the MCP specification
-- **Error Discovery**: Easily identify issues with parameter validation or response formatting
-- **Documentation**: Helps understand how your server behaves with different inputs
+- Target: ES2022
+- Module: ES2022 with Node module resolution
+- Strict mode enabled
+- Source maps for debugging
 
-### Security Note
+### Available Scripts
 
-The Inspector runs a local proxy server that communicates with your MCP server. For security:
-- A random authentication token is generated each session
-- The proxy should not be exposed to untrusted networks
-- The Inspector has permissions to spawn local processes
+| Command | Description |
+|---------|------------|
+| `npm run build` | Compile TypeScript to JavaScript |
+| `npm run lint` | Run ESLint checks |
+| `npm run lint:fix` | Auto-fix ESLint issues |
+| `npm run typecheck` | Type-check without building |
+| `npm test` | Run tests |
+| `npm run test:watch` | Run tests in watch mode |
+| `npm run inspect` | Launch MCP Inspector |
 
-### Example Workflow
+## 🔌 Integration
 
-1. Start the inspector: `npm run inspect`
-2. In the browser UI, select the "echo" tool
-3. Enter text in the parameter field
-4. Click "Execute" to test
-5. View the response showing your echoed text
-6. Check logs to see the full MCP protocol exchange
+### How MCP Integration Works
 
-## License
+```mermaid
+sequenceDiagram
+    participant IDE as VS Code / IDE<br/>(with MCP support)
+    participant MCP as Your MCP Server
+    participant Resources as Your Resources<br/>(DB, APIs, Files)
+    
+    IDE->>MCP: Connect via stdio
+    MCP-->>IDE: Capabilities (tools, resources, prompts)
+    
+    IDE->>MCP: Call tool "calculate"
+    MCP->>Resources: Perform calculation
+    Resources-->>MCP: Return result
+    MCP-->>IDE: Tool response
+    
+    IDE->>MCP: Read resource "config"
+    MCP->>Resources: Fetch configuration
+    Resources-->>MCP: Config data
+    MCP-->>IDE: Resource content
+    
+    Note over IDE,Resources: Bidirectional communication enables<br/>rich interactions between AI and your systems
+```
 
-MIT
+### With VS Code (Recommended)
+
+> [!TIP]
+> The easiest way to use your MCP server is through VS Code with MCP support extensions.
+
+1. **Build your server:**
+   ```bash
+   npm run build
+   ```
+
+2. **Open the project in VS Code:**
+   ```bash
+   code .
+   ```
+
+3. **Use the included `mcp.json` configuration:**
+   
+   The project includes an `mcp.json` file that VS Code MCP extensions can use to automatically start your server:
+
+   ```json
+   {
+     "servers": {
+       "starter": {
+         "type": "stdio",
+         "command": "node",
+         "args": [
+           "./build/index.js"
+         ]
+       }
+     }
+   }
+   ```
+
+4. **Install a VS Code MCP extension:**
+   - Open VS Code Extensions (⇧⌘X on macOS, Ctrl+Shift+X on Windows/Linux)
+   - Search for "MCP" or "Model Context Protocol"
+   - Install an MCP-compatible extension
+   - The extension will automatically detect and use your `mcp.json` configuration
+
+> [!NOTE]
+> The `mcp.json` file tells VS Code how to start your MCP server. When you open a project with this file, compatible extensions will automatically recognize it as an MCP server project.
+
+### With Claude Desktop
+
+> [!IMPORTANT]
+> Make sure to build your server before configuring Claude Desktop. The server must be compiled to JavaScript.
+
+1. Build your server:
+   ```bash
+   npm run build
+   ```
+
+2. Add to Claude Desktop configuration:
+   
+   > [!WARNING]
+   > Configuration file location varies by operating system:
+   > - **macOS**: `~/Library/Application Support/Claude/claude_desktop_config.json`
+   > - **Windows**: `%APPDATA%\Claude\claude_desktop_config.json`
+   > - **Linux**: `~/.config/Claude/claude_desktop_config.json`
+
+   ```json
+   {
+     "mcpServers": {
+       "my-server": {
+         "command": "node",
+         "args": ["/path/to/your/server/build/index.js"]
+       }
+     }
+   }
+   ```
+
+3. Restart Claude Desktop
+
+> [!CAUTION]
+> Always use absolute paths in your configuration. Relative paths may not work correctly.
+
+### With Custom Clients
+
+Use the MCP SDK to connect to your server:
+
+```typescript
+import { Client } from "@modelcontextprotocol/sdk/client/index.js";
+import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
+
+const transport = new StdioClientTransport({
+  command: "node",
+  args: ["/path/to/your/server/build/index.js"],
+});
+
+const client = new Client({
+  name: "my-client",
+  version: "1.0.0",
+}, { capabilities: {} });
+
+await client.connect(transport);
+```
+
+## 🤝 Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request. For major changes, please open an issue first to discuss what you would like to change.
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🔗 Resources
+
+- [Model Context Protocol Documentation](https://modelcontextprotocol.io)
+- [MCP SDK Repository](https://github.com/modelcontextprotocol/sdk)
+- [MCP Servers Collection](https://github.com/modelcontextprotocol/servers)
+- [MCP Inspector](https://github.com/modelcontextprotocol/inspector)
+
+## 🐛 Troubleshooting
+
+> [!WARNING]
+> Common issues and their solutions:
+
+| Issue | Solution |
+|-------|----------|
+| `Cannot find module` errors | Ensure you've run `npm run build` before starting the server |
+| Server not connecting | Check that you're using absolute paths in configuration |
+| Tools not loading | Verify your module exports match the `RegisterableModule` interface |
+| TypeScript errors | Run `npm run typecheck` to identify type issues |
+| Auto-loading fails | Check file names and ensure modules are in correct directories |
+
+## 💡 Best Practices
+
+> [!TIP]
+> Follow these practices for a robust MCP server:
+
+### Development
+- ✅ **Type Safety**: Use TypeScript's strict mode for catching errors early
+- ✅ **Modular Design**: Keep tools, resources, and prompts focused on single responsibilities
+- ✅ **Error Handling**: Always handle errors gracefully and provide meaningful messages
+- ✅ **Validation**: Use Zod schemas to validate all inputs
+- ✅ **Testing**: Write tests for critical functionality
+
+---
+
+<div align="center">
+
+Built with ❤️ for the MCP community
+
+[Report Issues](https://github.com/yourusername/mcp-server-starter-ts/issues) · [Request Features](https://github.com/yourusername/mcp-server-starter-ts/issues) · [Documentation](https://modelcontextprotocol.io)
+
+</div>
