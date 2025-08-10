@@ -3,7 +3,7 @@ import { describe, it } from "node:test";
 import { 
   withTestClient, 
   assertJSONResource
-} from "./helpers/test-client.js";
+} from "./helpers/test-client.ts";
 
 type SystemInfo = {
   platform: string;

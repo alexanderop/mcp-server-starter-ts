@@ -3,7 +3,7 @@ import { describe, it } from "node:test";
 import { 
   withTestClient, 
   assertResourceContent
-} from "./helpers/test-client.js";
+} from "./helpers/test-client.ts";
 
 describe("Timestamp Resource Tests", () => {
   it("should list all timestamp resource variants", async () => {

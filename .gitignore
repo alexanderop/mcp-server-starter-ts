@@ -17,8 +17,3 @@ build/tests/
 .DS_Store
 
 # IDE
-.vscode/*
-!.vscode/settings.json
-!.vscode/extensions.json
-!.vscode/launch.json
-!.vscode/tasks.json

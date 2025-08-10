@@ -5,10 +5,9 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "test": "npm run build && npm run test:run",
-    "test:run": "node --version | grep -q 'v2[3-9]\\|v[3-9][0-9]' && node --test tests/**/*.test.ts || (npm run build:tests && node --test build/tests/**/*.test.js)",
+    "test": "node --test \"tests/**/*.test.ts\"",
+    "test:watch": "node --test --watch \"tests/**/*.test.ts\"",
     "build": "tsc && chmod 755 build/index.js",
-    "build:tests": "tsc -p tsconfig.test.json",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "typecheck": "tsc --noEmit",
