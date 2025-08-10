@@ -1,8 +1,24 @@
+/**
+ * @module Prompts/CodeAnalyzer
+ * @category Prompts
+ * 
+ * Advanced code analysis prompt for security, performance, style, and bug detection.
+ * Supports multiple programming languages with auto-completion for parameters.
+ * 
+ * @since 1.0.0
+ */
+
 import { completable } from "@modelcontextprotocol/sdk/server/completable.js";
 import { z } from "zod";
 import type { RegisterableModule } from "../registry/types.js";
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 
+/**
+ * Schema for code analyzer prompt arguments.
+ * All fields support auto-completion for better user experience.
+ * 
+ * @internal
+ */
 const codeAnalyzerSchema = {
   code: z.string().trim().min(1).describe("Code to analyze"),
   language: completable(
@@ -27,7 +43,40 @@ const codeAnalyzerSchema = {
   ),
 } as const;
 
-// TypeScript will automatically infer the types from the schema
+/**
+ * Code analyzer prompt module.
+ * 
+ * Provides comprehensive code analysis across multiple dimensions:
+ * - **Security**: Identifies potential vulnerabilities and security risks
+ * - **Performance**: Detects inefficiencies and optimization opportunities
+ * - **Style**: Checks for coding standards and best practices
+ * - **Bugs**: Finds logical errors and potential runtime issues
+ * - **All**: Comprehensive analysis across all categories
+ * 
+ * @example Using the code analyzer prompt
+ * ```typescript
+ * const prompt = await client.getPrompt("code-analyzer", {
+ *   code: "function getData() { return fetch('/api/data') }",
+ *   language: "javascript",
+ *   analysisType: "bugs",
+ *   verbose: "yes"
+ * });
+ * 
+ * // The prompt will analyze the code for missing error handling,
+ * // async/await issues, and other potential bugs
+ * ```
+ * 
+ * @example Supported languages
+ * - TypeScript
+ * - JavaScript
+ * - Python
+ * - Rust
+ * - Go
+ * - Java
+ * 
+ * @see {@link https://owasp.org/www-project-top-ten/} OWASP Top 10 for security analysis
+ * @see {@link https://eslint.org/} ESLint for JavaScript/TypeScript style guides
+ */
 const codeAnalyzerModule: RegisterableModule = {
   type: "prompt",
   name: "code-analyzer",

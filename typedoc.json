@@ -1,4 +1,5 @@
 {
+  "$schema": "https://typedoc.org/schema.json",
   "entryPointStrategy": "expand",
   "entryPoints": ["src"],
   "tsconfig": "tsconfig.json",
@@ -10,13 +11,31 @@
   "readme": "README.md",
   "navigationLinks": {
     "GitHub": "https://github.com/alexanderop/mcp-server-starter-ts",
-    "MCP Protocol": "https://modelcontextprotocol.io"
+    "MCP Protocol": "https://modelcontextprotocol.io",
+    "NPM Package": "https://www.npmjs.com/package/mcp-server-starter"
   },
   "categorizeByGroup": true,
-  "categoryOrder": ["Core", "Tools", "Resources", "Prompts", "Registry", "*"],
+  "categoryOrder": ["Core", "Tools", "Resources", "Prompts", "Registry", "Examples", "*"],
   "groupOrder": ["Variables", "Functions", "Classes", "Interfaces", "Type Aliases", "*"],
   "theme": "default",
   "githubPages": true,
   "hideGenerator": false,
-  "searchInComments": true
+  "searchInComments": true,
+  "searchCategoryBoosts": {
+    "Core": 2.0,
+    "Tools": 1.5,
+    "Resources": 1.5,
+    "Prompts": 1.5
+  },
+  "includeVersion": true,
+  "sort": ["source-order"],
+  "visibilityFilters": {
+    "protected": false,
+    "private": false,
+    "inherited": true,
+    "external": false
+  },
+  "plugin": ["typedoc-plugin-coverage"],
+  "coverageLabel": "Documentation",
+  "requiredToBeDocumented": ["Enum", "EnumMember", "Variable", "Function", "Class", "Interface", "Property", "Method", "TypeAlias"]
 }
