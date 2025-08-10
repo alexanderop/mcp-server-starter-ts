@@ -4,7 +4,7 @@ import {
   withTestClient, 
   assertToolResponse,
   assertToolError 
-} from "./helpers/test-client.ts";
+} from "./helpers/test-client.js";
 
 describe("Echo Tool Integration Tests", () => {
   it("should list echo tool", async () => {

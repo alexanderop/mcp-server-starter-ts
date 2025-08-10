@@ -5,6 +5,7 @@ import type { McpServer} from "@modelcontextprotocol/sdk/server/mcp.js";
 type TimestampFormat = "iso" | "unix" | "readable";
 
 const MIME_TYPE_PLAIN = "text/plain";
+const VALID_FORMATS: Array<TimestampFormat> = ["iso", "unix", "readable"];
 
 const timestampModule: RegisterableModule = {
   type: "resource",
@@ -23,8 +24,9 @@ const timestampModule: RegisterableModule = {
         }),
         complete: {
           format: (value) => {
-            return ["iso", "unix", "readable"].filter(f => 
-              f.toLowerCase().startsWith(value.toLowerCase())
+            const normalizedValue = value.toLowerCase();
+            return VALID_FORMATS.filter(f => 
+              f.toLowerCase().startsWith(normalizedValue)
             );
           },
         },
@@ -49,9 +51,7 @@ const timestampModule: RegisterableModule = {
           };
         }
 
-        const validFormats: Array<TimestampFormat> = ["iso", "unix", "readable"];
-        
-        if (!validFormats.includes(format as TimestampFormat)) {
+        if (!VALID_FORMATS.includes(format as TimestampFormat)) {
           return {
             contents: [
               {
