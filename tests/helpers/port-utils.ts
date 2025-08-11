@@ -10,7 +10,7 @@ export async function getAvailablePort(): Promise<number> {
     
     server.listen(0, () => {
       const address = server.address();
-      if (address && typeof address !== "string") {
+      if (address !== null && typeof address !== "string") {
         const port = address.port;
         server.close(() => {
           resolve(port);
@@ -68,7 +68,7 @@ export async function waitForPort(
     }
   }
   
-  throw new Error(`Timeout waiting for port ${port} to be ready`);
+  throw new Error(`Timeout waiting for port ${String(port)} to be ready`);
 }
 
 /**
@@ -88,7 +88,7 @@ export async function isPortAvailable(port: number, host = "localhost"): Promise
       if (err.code === "EADDRINUSE") {
         resolve(false);
       } else {
-        resolve(true); // Other errors mean port is technically available
+        resolve(true);
       }
     });
   });

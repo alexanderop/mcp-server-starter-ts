@@ -189,9 +189,14 @@ export default tseslint.config(
       }],
       '@typescript-eslint/no-unnecessary-condition': 'error',
       '@typescript-eslint/no-unused-vars': ['error', {
+        args: 'all',
         argsIgnorePattern: '^_',
+        vars: 'all',
         varsIgnorePattern: '^_',
+        caughtErrors: 'all',
         caughtErrorsIgnorePattern: '^_',
+        ignoreRestSiblings: false,
+        reportUsedIgnorePattern: true,
       }],
       
       // Prefer const assertions

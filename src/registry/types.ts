@@ -2,7 +2,6 @@ import { z } from "zod";
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 
 export const moduleTypeSchema = z.enum(["tool", "resource", "prompt"]);
-export type ModuleType = z.infer<typeof moduleTypeSchema>;
 
 export const registerableModuleSchema = z.object({
   type: moduleTypeSchema,
