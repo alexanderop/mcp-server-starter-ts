@@ -12,7 +12,10 @@
     "lint:fix": "eslint . --fix",
     "typecheck": "tsc --noEmit",
     "inspect": "npm run build && npx @modelcontextprotocol/inspector node build/index.js",
+    "inspect:http": "npm run build && npx @modelcontextprotocol/inspector http://localhost:3000/mcp",
     "dev": "npm run build && node dev",
+    "serve:stdio": "npm run build && STARTER_TRANSPORT=stdio node build/index.js",
+    "serve:http": "npm run build && STARTER_TRANSPORT=http PORT=3000 node build/index.js",
     "gen:tool": "hygen tool new",
     "gen:prompt": "hygen prompt new",
     "gen:resource": "hygen resource new"
@@ -30,11 +33,15 @@
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.17.2",
+    "cors": "^2.8.5",
+    "express": "^5.1.0",
     "fast-glob": "^3.3.3",
     "zod": "^3.25.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.33.0",
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.3",
     "@types/node": "^24.2.1",
     "@typescript-eslint/parser": "^8.39.0",
     "eslint": "^9.33.0",

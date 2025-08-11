@@ -1,0 +1,43 @@
+version: "3.9"
+
+services:
+  mcp-server-starter:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: mcp-server-starter
+    environment:
+      - STARTER_TRANSPORT=http
+      - PORT=3000
+      - CORS_ORIGIN=*
+      - NODE_ENV=production
+    ports:
+      - "3000:3000"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').get('http://localhost:3000/mcp', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 5s
+
+  # Optional: Add a development version with hot reload
+  mcp-server-starter-dev:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: build
+    container_name: mcp-server-starter-dev
+    environment:
+      - STARTER_TRANSPORT=http
+      - PORT=3001
+      - CORS_ORIGIN=*
+      - NODE_ENV=development
+    ports:
+      - "3001:3001"
+    volumes:
+      - ./src:/app/src
+      - ./build:/app/build
+    command: ["npm", "run", "serve:http"]
+    profiles:
+      - dev

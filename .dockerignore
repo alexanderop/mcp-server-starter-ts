@@ -1,0 +1,62 @@
+# Node modules
+node_modules/
+
+# Build output (will be built in Docker)
+build/
+dist/
+
+# Test files
+tests/
+*.test.ts
+*.test.js
+
+# Development files
+dev.js
+_templates/
+
+# Git files
+.git/
+.gitignore
+
+# Docker files
+Dockerfile
+docker-compose.yml
+.dockerignore
+
+# Lock files (except npm)
+pnpm-lock.yaml
+yarn.lock
+
+# Documentation
+*.md
+
+# IDE files
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Log files
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment files
+.env
+.env.*
+
+# GitHub workflows
+.github/
+
+# ESLint
+eslint.config.mjs
+.eslintrc*
+.eslintignore
+
+# TypeScript config for ESLint
+tsconfig.eslint.json
