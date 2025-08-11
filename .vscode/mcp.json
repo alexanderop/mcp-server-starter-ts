@@ -1,11 +1,19 @@
 {
-    "servers": {
-        "starter": {
-            "type": "stdio",
-            "command": "node",
-            "args": [
-                "./build/index.js"
-            ]
-        }
+  "servers": {
+    "mcp-server-starter-stdio": {
+      "type": "stdio",
+      "command": "node",
+      "args": ["./build/index.js"],
+      "env": {
+        "STARTER_TRANSPORT": "stdio"
+      }
+    },
+    "mcp-server-starter-http": {
+      "type": "http",
+      "url": "http://localhost:3000/mcp",
+      "headers": {
+        "x-mcp-session": "vscode-session"
+      }
     }
+  }
 }

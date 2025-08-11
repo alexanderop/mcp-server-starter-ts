@@ -1,0 +1,31 @@
+{
+  "$schema": "https://unpkg.com/knip@5/schema.json",
+  "entry": [
+    "src/index.ts",
+    "src/tools/*.ts",
+    "src/resources/*.ts",
+    "src/prompts/*.ts"
+  ],
+  "project": [
+    "src/**/*.ts",
+    "tests/**/*.ts"
+  ],
+  "ignore": [
+    "build/**",
+    "dist/**",
+    "docs/**",
+    "_templates/**",
+    "tests/helpers/index.ts",
+    "tests/helpers/port-utils.ts"
+  ],
+  "ignoreDependencies": [
+    "@typescript-eslint/parser"
+  ],
+  "ignoreExportsUsedInFile": true,
+  "typescript": {
+    "config": "tsconfig.json"
+  },
+  "jest": false,
+  "mocha": false,
+  "vitest": false
+}

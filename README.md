@@ -37,6 +37,12 @@ Whether you're building integrations for databases, APIs, file systems, or custo
 - [Prerequisites](#-prerequisites)
 - [Installation](#-installation)
 - [Quick Start](#-quick-start)
+- [Transport Modes](#-transport-modes)
+  - [Stdio Mode](#stdio-mode-default)
+  - [HTTP Mode](#http-mode-sse--json-rpc)
+  - [Environment Variables](#environment-variables)
+  - [Configuration Examples](#configuration-examples)
+- [Docker Support](#-docker-support)
 - [Project Structure](#-project-structure)
 - [Development Guide](#-development-guide)
   - [Using Code Generators](#using-code-generators)
@@ -60,6 +66,8 @@ Whether you're building integrations for databases, APIs, file systems, or custo
 - 📝 **Extensible Architecture** - Clear patterns for adding new capabilities
 - 🎯 **Example Implementation** - Working echo tool demonstrates the pattern
 - ⚡ **Code Generators** - Hygen scaffolding for rapid module creation
+- 🌐 **Dual Transport Support** - Both stdio and HTTP (SSE + JSON-RPC) transports
+- 🐳 **Docker Ready** - Containerized deployment with multi-stage builds
 
 ## 📚 Prerequisites
 
@@ -115,6 +123,118 @@ You can also use this as a GitHub template:
    ```bash
    npm test
    ```
+
+## 🚀 Transport Modes
+
+This server supports two transport modes: **stdio** (default) and **HTTP** (Streamable SSE + JSON-RPC).
+
+### Stdio Mode (Default)
+
+Traditional stdio transport for local development and desktop clients:
+
+```bash
+# Run with stdio transport
+npm run serve:stdio
+
+# Or simply (defaults to stdio)
+npm run build && node build/index.js
+```
+
+### HTTP Mode (SSE + JSON-RPC)
+
+Streamable HTTP transport for web deployments and remote access:
+
+```bash
+# Run with HTTP transport on port 3000
+npm run serve:http
+
+# Test with MCP Inspector
+npm run inspect:http
+```
+
+The HTTP transport exposes:
+- **SSE endpoint** (GET): `http://localhost:3000/mcp` - For server-sent events
+- **JSON-RPC endpoint** (POST): `http://localhost:3000/mcp` - For requests
+
+### Environment Variables
+
+Configure the server behavior using environment variables:
+
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `STARTER_TRANSPORT` | Transport mode: `stdio` or `http` | `stdio` |
+| `PORT` | HTTP server port (HTTP mode only) | `3000` |
+| `CORS_ORIGIN` | CORS allowed origins (HTTP mode only) | `*` |
+
+### Configuration Examples
+
+#### VS Code (`mcp.json` or `.vscode/mcp.json`)
+
+```json
+{
+  "servers": {
+    "starter-stdio": {
+      "type": "stdio",
+      "command": "node",
+      "args": ["./build/index.js"]
+    },
+    "starter-http": {
+      "type": "http",
+      "url": "http://localhost:3000/mcp"
+    }
+  }
+}
+```
+
+#### Claude Desktop
+
+Add to your Claude Desktop configuration:
+
+```json
+{
+  "mcpServers": {
+    "mcp-server-starter": {
+      "command": "node",
+      "args": ["/path/to/mcp-server-starter/build/index.js"]
+    }
+  }
+}
+```
+
+## 🐳 Docker Support
+
+The server includes Docker support for easy deployment:
+
+### Quick Start with Docker
+
+```bash
+# Build and run with Docker Compose
+docker compose up --build
+
+# Or run the pre-built image
+docker run -p 3000:3000 ghcr.io/alexanderopalic/mcp-server-starter-ts:latest
+```
+
+### Docker Configuration
+
+The Docker container runs in HTTP mode by default. Override settings with environment variables:
+
+```bash
+docker run -p 3000:3000 \
+  -e CORS_ORIGIN="https://example.com" \
+  -e PORT=3000 \
+  ghcr.io/alexanderopalic/mcp-server-starter-ts:latest
+```
+
+### Development with Docker
+
+Use the development profile for hot reload:
+
+```bash
+docker compose --profile dev up mcp-server-starter-dev
+```
+
+This mounts your source code and enables live reloading on port 3001.
 
 ## 📁 Project Structure
 

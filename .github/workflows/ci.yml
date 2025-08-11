@@ -30,6 +30,9 @@ jobs:
       - name: Run TypeScript type check
         run: npm run typecheck
         
+      - name: Run Knip (check for unused exports)
+        run: npm run knip
+        
       - name: Build project
         run: npm run build
         

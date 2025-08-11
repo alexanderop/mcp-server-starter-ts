@@ -76,8 +76,8 @@ const timestampModule: RegisterableModule = {
             timestamp = now.toLocaleString();
             break;
           default: {
-            const _exhaustive: never = validFormat;
-            return _exhaustive;
+            const exhaustiveCheck: never = validFormat;
+            return exhaustiveCheck;
           }
         }
 
