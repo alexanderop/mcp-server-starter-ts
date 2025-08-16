@@ -37,6 +37,7 @@
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.17.3",
     "cors": "^2.8.5",
+    "dotenv": "^17.2.1",
     "express": "^5.1.0",
     "fast-glob": "^3.3.3",
     "zod": "^3.25.0"

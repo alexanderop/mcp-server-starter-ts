@@ -3,10 +3,14 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
 import cors from "cors";
+import { config } from "dotenv";
 import express from "express";
 import { autoRegisterModules } from "../registry/auto-loader.js";
 
 type TransportMode = "stdio" | "http";
+
+// Load environment variables from .env file
+config();
 
 export async function boot(
   mode?: TransportMode
