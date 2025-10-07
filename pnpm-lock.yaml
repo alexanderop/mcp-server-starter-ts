@@ -21,8 +21,8 @@ dependencies:
     specifier: ^3.3.3
     version: 3.3.3
   zod:
-    specifier: ^3.25.0
-    version: 3.25.76
+    specifier: ^4.1.12
+    version: 4.1.12
 
 devDependencies:
   '@eslint/js':
@@ -3261,4 +3261,3 @@ packages:
 
   /zod@4.1.12:
     resolution: {integrity: sha512-JInaHOamG8pt5+Ey8kGmdcAcg3OL9reK8ltczgHTAwNhMys/6ThXHityHxVV2p3fkw/c+MAvBHFVYHFZDmjMCQ==}
-    dev: true
