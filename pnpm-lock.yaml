@@ -6,8 +6,8 @@ settings:
 
 dependencies:
   '@modelcontextprotocol/sdk':
-    specifier: ^1.18.2
-    version: 1.18.2
+    specifier: ^1.19.1
+    version: 1.19.1
   cors:
     specifier: ^2.8.5
     version: 2.8.5
@@ -192,8 +192,8 @@ packages:
     engines: {node: '>=18.18'}
     dev: true
 
-  /@modelcontextprotocol/sdk@1.18.2:
-    resolution: {integrity: sha512-beedclIvFcCnPrYgHsylqiYJVJ/CI47Vyc4tY8no1/Li/O8U4BTlJfy6ZwxkYwx+Mx10nrgwSVrA7VBbhh4slg==}
+  /@modelcontextprotocol/sdk@1.19.1:
+    resolution: {integrity: sha512-3Y2h3MZKjec1eAqSTBclATlX+AbC6n1LgfVzRMJLt3v6w0RCYgwLrjbxPDbhsYHt6Wdqc/aCceNJYgj448ELQQ==}
     engines: {node: '>=18'}
     dependencies:
       ajv: 6.12.6
