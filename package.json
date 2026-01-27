@@ -43,18 +43,18 @@
     "zod": "^3.25.0"
   },
   "devDependencies": {
-    "@eslint/js": "^9.38.0",
+    "@eslint/js": "^9.39.2",
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.4",
     "@types/node": "^24.9.1",
-    "@typescript-eslint/parser": "^8.46.2",
-    "eslint": "^9.38.0",
+    "@typescript-eslint/parser": "^8.54.0",
+    "eslint": "^9.39.2",
     "eslint-plugin-import": "^2.32.0",
-    "eslint-plugin-sonarjs": "^3.0.5",
+    "eslint-plugin-sonarjs": "^3.0.6",
     "hygen": "^6.2.11",
-    "knip": "^5.66.2",
+    "knip": "^5.82.1",
     "typescript": "^5.9.3",
-    "typescript-eslint": "^8.46.2"
+    "typescript-eslint": "^8.54.0"
   },
   "bin": {
     "mcp-hello-world": "./build/index.js"
