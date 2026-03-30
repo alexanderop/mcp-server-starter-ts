@@ -616,6 +616,14 @@ The project uses strict TypeScript settings for maximum type safety. Key configu
 | `npm run gen:prompt` | Generate a new prompt with test |
 | `npm run gen:resource` | Generate a new resource with test |
 
+### Optional CI hardening
+
+If you want a small optional GitHub Actions example for repos created from this template, see
+`.github/workflows/mcp-trust.yml`.
+
+It runs an MCP Trust Kit surface-risk scan against `npm run serve:stdio`, uploads SARIF to GitHub
+code scanning, and stays `workflow_dispatch`-only by default so it does not change the existing CI gates.
+
 ## 🔌 Integration
 
 ### How MCP Integration Works
