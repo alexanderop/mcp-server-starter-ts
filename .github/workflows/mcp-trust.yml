@@ -1,0 +1,38 @@
+name: Optional MCP Trust Scan
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  security-events: write
+
+jobs:
+  mcp-trust:
+    name: Surface Risk Scan
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 23.x
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run MCP Trust Kit
+        uses: aak204/MCP-Trust-Kit@v0.4.0
+        with:
+          cmd: npm run serve:stdio
+          sarif-out: mcp-trust-report.sarif
+
+      - name: Upload SARIF
+        if: always()
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: mcp-trust-report.sarif
