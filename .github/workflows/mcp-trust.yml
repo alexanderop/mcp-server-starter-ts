@@ -26,7 +26,7 @@ jobs:
         run: npm ci
 
       - name: Run MCP Trust Kit
-        uses: aak204/MCP-Trust-Kit@v0.4.0
+        uses: aak204/MCP-Trust-Kit@5d37f99e3cdfd703e4fe75aa88969475d1970e28
         with:
           cmd: npm run serve:stdio
           sarif-out: mcp-trust-report.sarif
